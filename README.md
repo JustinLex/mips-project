@@ -17,3 +17,4 @@ Jointly developed by Justin Lex and Pontus.
 ## Game Ideas
 * Battle Tetris
 * Mario-esque platformer
+* SHMUP (nyancat theme?)

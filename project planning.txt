@@ -1,0 +1,16 @@
+ideas:
+Array of enemies
+nyancat 2 collision boxes, body and head
+update the whole screen 60 fps
+flash function
+
+game logic:
+60 tick/s game, update screen on every tick too
+1. set timer
+2. check win conditions
+3. check input
+4. move nyan and spawn shots
+5. collision detect
+6. spawn enemies and powerups
+7. draw
+8. wait until timer fires

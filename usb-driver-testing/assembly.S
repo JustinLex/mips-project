@@ -43,7 +43,8 @@ signalsleep: #waits exactly 53 cycles for use in between usb signalling cycles
 	jr		$ra
 	nop
 
-sendsync:
+sendsync: #enables port and sends the sync sequence to begin a packet
+	//enable port again
 	sendk
 	jal		signalsleep
 	nop
@@ -68,3 +69,4 @@ sendsync:
 	sendk
 	jr		$ra
 	nop
+	#requires 51 cycles before next signal

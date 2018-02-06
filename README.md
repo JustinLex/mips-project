@@ -2,19 +2,15 @@
 
 ## Details
 A larger project within IS1200 Computer Hardware Engineering to create a program for our PIC32 ChipKit.    
-Jointly developed by Justin Lex and Pontus.
+Jointly developed by Justin Lex and Petr Kocian.
 
 ## Goals
-* Implement a two-player game
-* Implement USB keyboard input
-* Implement music playback
+* Read UART messages from GPS
+* Interpret messages from GPS, such as XXGGA to print out lat/long
+* interpret more advanced messages from GPS
 
 ## Extended Goals
-* Implement a main menu
-* Implement multiple games in one program
-* implement PCM playback
-
-## Game Ideas
-* Battle Tetris
-* Mario-esque platformer
-* SHMUP (nyancat theme?)
+* Implement Kista Map
+* Implement I2C communications with compass
+* Implement compass graphic
+* Beep faster the faster you go?

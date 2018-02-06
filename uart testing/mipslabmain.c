@@ -63,14 +63,24 @@ int main(void) {
 
 	display_image(96, icon);
 
-	//put usb handling code here
+	int mytime = 0x5957;
+
+	// data string must be big enough to hold entire GGA message, we're not using memory dynamically here
+	char datastring = malloc(7+10+11+2+12+2+2+3+11+11+2+11+2+11+11+4+6)
+	*datastring = "nodata";
+	setupuart();
+
 	while(1) {
-		delay(1000);
-		char usbinputstring[] = "a";
-		//read from usb and put into variable
-		display_string(3, usbinputstring);
-		display_update();
-		tick(&mytime);
-		display_image(96, icon);
+
+  delay( 1000 );
+	lookforgga(textstring);
+  display_string( 3, datastring );
+  display_update();
+  tick( &mytime );
+  display_image(96, icon);
 	}
+
+	return 0;
+
+
 }

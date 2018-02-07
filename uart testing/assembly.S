@@ -20,7 +20,7 @@
 #delay for ~100 microseconds
 .global	delay
 delay:
-	addi $t0,$0,883 # 8827 for 1 millisecond
+	addi $t0,$0,8827 # 8827 for 1 millisecond
 	blez $a0,nomoredelay
 	nop
 	delayloop:

@@ -10,9 +10,10 @@
 #include <stdint.h>   /* Declarations of uint_32 and the like */
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "mipslab.h"  /* Declatations for these labs */
+#include <string.h>
 
 /*reserve 110 characters for gps data strings*/
-char datastring[] ="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+char datastring[] ="aaaaaaaaaaaaa";
 
 int main(void) {
         /*
@@ -66,20 +67,29 @@ int main(void) {
 
 	display_image(96, icon);
 
-	//int mytime = 0x5957;
+	int mytime = 0x5957;
+	int* reg_u2sta = (int *) 0xBF806210; //UART2 status/control register
 
 	setupuart();
 
 	while(1) {
 
-	lookforgga(datastring); //looks for data, returns with new datastring after recieving a byte
+	//lookforgga(datastring); //looks for data, returns with new datastring after recieving a byte
+	delay(1000);
 
+  //check idle bit
+  //_Bool r_idle = (_Bool) ((*reg_u2sta & 0x10) >> 4); //RIDLE is bit 4 of U2STA
+  //show data status
+  //if(r_idle) strcpy(datastring, "IDLE");
+  //else strcpy(datastring, "recieving...");
+
+	//strcpy(datastring, "butt");
 	//print current datastring
-  display_string( 2, datastring );
+  display_string( 3, datastring );
 
   display_update();
-  //tick( &mytime );
-  //display_image(96, icon);
+  tick( &mytime );
+  display_image(96, icon);
 	}
 
 	return 0;

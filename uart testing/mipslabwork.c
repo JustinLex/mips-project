@@ -42,14 +42,14 @@ void lookforgga(char* datastring) {
   char screendelaycounter = 0; //skip every 20 updates so we get 60fps, not 1200 fps
   /*loop here, updating display until data is available*/
   while(!data_available) {
-    delay( 8 );
-    //check idle bit
-    _Bool r_idle = (_Bool) ((*reg_u2sta & 0x10) >> 4); //RIDLE is bit 4 of U2STA
-    //show data status
-    if(r_idle) display_string( 3, "IDLE" );
-    else display_string( 3, "recieving...");
+    delay( 1 );
 
     if(screendelaycounter > 19) {
+      //check idle bit
+      _Bool r_idle = (_Bool) ((*reg_u2sta & 0x10) >> 4); //RIDLE is bit 4 of U2STA
+      //show data status
+      if(r_idle) display_string( 3, "IDLE" );
+      else display_string( 3, "recieving...");
       display_update();
       screendelaycounter = 0;
     }
@@ -66,7 +66,7 @@ void lookforgga(char* datastring) {
 
   /*update datastring*/
   //if this is a new string or our string is too long already (might have missed a $), then reset the data string.
-  if(newchar == '$' || datastringcounter > 118 ) {
+  if(newchar == '$' || datastringcounter > 4 ) {
     datastring[0] = '$';
     datastring[1] = '\0';
     datastringcounter = 1;

@@ -11,6 +11,11 @@
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "mipslab.h"  /* Declatations for these labs */
 
+/*reserve 110 characters for gps data strings*/
+char[] datastring ="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+
 int main(void) {
         /*
 	  This will set the peripheral bus clock to the same frequency
@@ -63,21 +68,20 @@ int main(void) {
 
 	display_image(96, icon);
 
-	int mytime = 0x5957;
+	//int mytime = 0x5957;
 
-	// data string must be big enough to hold entire GGA message, we're not using memory dynamically here
-	char datastring = malloc(7+10+11+2+12+2+2+3+11+11+2+11+2+11+11+4+6)
-	*datastring = "nodata";
 	setupuart();
 
 	while(1) {
 
-  delay( 1000 );
-	lookforgga(textstring);
-  display_string( 3, datastring );
+	lookforgga(datastring); //looks for data, returns with new datastring after recieving a byte
+
+	//print current datastring
+  display_string( 2, datastring );
+
   display_update();
-  tick( &mytime );
-  display_image(96, icon);
+  //tick( &mytime );
+  //display_image(96, icon);
 	}
 
 	return 0;

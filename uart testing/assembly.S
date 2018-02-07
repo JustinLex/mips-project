@@ -17,10 +17,10 @@
 	addi	$sp,$sp,4
 .endm
 
-#delay for ~1 second
+#delay for ~100 microseconds
 .global	delay
 delay:
-	addi $t0,$0,8827 #[delay-slot] 8827
+	addi $t0,$0,883 # 8827 for 1 millisecond
 	blez $a0,nomoredelay
 	nop
 	delayloop:

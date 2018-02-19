@@ -22,19 +22,14 @@ void user_isr( void )
 //set up uart and start listening to the gps module
 void setupuart() {
   /*See PIC32MX3XX datasheet for addresses, Reference manual 21 for settings.*/
-  int* reg_u2brg = (int *) 0xBF806240; //UART2 baud register
-  int* reg_u2sta = (int *) 0xBF806210; //UART2 status/control register
-  int* reg_u2mode = (int *) 0xBF806200; //UART2 mode register
-
-  *reg_u2brg = 0x208; // set uart baud to 9600 if pbclk is 1:1 and BRGH=0 [=(80Mhz/16/9600)-1]
-  *reg_u2sta = 0x1080; //00 0 1 0 0 0 0 10 0 0 0 0 0 0 set only RX, interrupt when buffer is 3/4 filled
-  *reg_u2mode = 0x8000; //1 0 0 0 0 0 00 0 0 0 0 0 00 0 Enable UART2, no special options
-
+  U2BRG = 0x208 // set uart baud to 9600 if pbclk is 1:1 and BRGH=0 [=(80Mhz/16/9600)-1]
+  U2STA = 0x1080 //00 0 1 0 0 0 0 10 0 0 0 0 0 0 set only RX, interrupt when buffer is 3/4 filled
+  U2MODE = 0x8000 //1 0 0 0 0 0 00 0 0 0 0 0 00 0 Enable UART2, no special options
 }
 
 int datastringcounter = 0;
 
-//checks if there is a gga message in the uart buffer
+//checks if there is a NMEA message in the uart buffer
 void lookforgga(char* datastring) {
   int* reg_u2sta = (int *) 0xBF806210; //UART2 status/control register
   _Bool data_available = 0;
@@ -46,7 +41,7 @@ void lookforgga(char* datastring) {
 
     if(screendelaycounter > 19) {
       //check idle bit
-      _Bool r_idle = (_Bool) ((*reg_u2sta & 0x10) >> 4); //RIDLE is bit 4 of U2STA
+      _Bool r_idle = (_Bool) ((U2STA & 0x10) >> 4); //RIDLE is bit 4 of U2STA
       //show data status
       if(r_idle) display_string( 3, "IDLE" );
       else display_string( 3, "recieving...");
@@ -55,13 +50,12 @@ void lookforgga(char* datastring) {
     }
     else screendelaycounter++;
 
-    data_available = (_Bool) (*reg_u2sta & 0x1); // check if there's data available
+    data_available = (_Bool) (U2STA & 0x1); // check if there's data available
   }
 
   /* read byte from bus*/
-  int* rxreg = (int *) 0xBF806230; //register for incoming bytes
-  int read_error = *reg_u2sta & 0x0c; //check for PERR or FERR
-  char newchar = (char) *rxreg; //read byte
+  int read_error = USTA & 0x0c; //check for PERR or FERR
+  char newchar = (char) U2RXREG; //read byte
   if(read_error) newchar = '?';
 
   /*update datastring*/

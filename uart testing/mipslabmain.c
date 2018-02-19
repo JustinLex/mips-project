@@ -68,7 +68,6 @@ int main(void) {
 	display_image(96, icon);
 
 	int mytime = 0x5957;
-	int* reg_u2sta = (int *) 0xBF806210; //UART2 status/control register
 
 	setupuart();
 

@@ -21,6 +21,10 @@ int nextprime( int inval );
 void quicksleep(int cyc);
 void tick( unsigned int * timep );
 
+//make uart bus control available to the display functions
+void setupuart(void);
+void disableuart(void);
+
 /* Declare display_debug - a function to help debugging.
 
    After calling display_debug,

@@ -55,10 +55,10 @@ int main(void) {
 	SPI2CONSET = 0x8000;
 
 	display_init();
-	display_string(0, ""); //Bork Bork
-	display_string(1, "DUDUDUDUDUDUDU"); //good timing
-	display_string(2, "DUDUDUDUDUDUDU"); //pupper
-	display_string(3, "or don't");
+	display_string(0, "abcd"); //Bork Bork
+	display_string(1, "efgh"); //good timing
+	display_string(2, "ijkl"); //pupper
+	display_string(3, "mnop");
 	display_update();
 
 	display_image(96, icon);

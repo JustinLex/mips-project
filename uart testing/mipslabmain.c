@@ -12,8 +12,11 @@
 #include "mipslab.h"  /* Declatations for these labs */
 #include <string.h>
 
+
+int screendelaycounter = 0;
 /*reserve 110 characters for gps data strings*/
-char datastring[] ="aaaaaaaaaaaaa";
+char datastring[] ="aaaaaaaaaaaaaa";
+uint8_t datastringlength = 0;
 
 int main(void) {
         /*
@@ -71,24 +74,33 @@ int main(void) {
 
 	setupuart();
 
+	_Bool data_available = 0;
+
 	while(1) {
+		while(!data_available) {
+	    delay( 1 );
+			data_available = (_Bool) (U2STA & 0x1); // check if there's data available
+		}
+		/* read byte from bus*/
+	  int read_error = U2STA & 0x0c; //check for PERR or FERR
+	  char newchar = (char) U2RXREG; //read byte
+	  if(read_error) newchar = '?';
 
-	//lookforgga(datastring); //looks for data, returns with new datastring after recieving a byte
-	delay(1000);
+		/*update datastring*/
+	  //if this is a new string or our string is too long already (might have missed a $), then reset the data string.
+		if(newchar == '$' || datastringlength > 11 ) {
+	    datastring[0] = '$';
+	    datastring[1] = '\0';
+			datastringlength = 1;
+	  } else {
+	    datastring[datastringlength] = newchar;
+	    datastring[datastringlength + 1] = '\0';
+			datastringlength++;
+	  }
 
-  //check idle bit
-  //_Bool r_idle = (_Bool) ((*reg_u2sta & 0x10) >> 4); //RIDLE is bit 4 of U2STA
-  //show data status
-  //if(r_idle) strcpy(datastring, "IDLE");
-  //else strcpy(datastring, "recieving...");
-
-	//strcpy(datastring, "butt");
-	//print current datastring
-  display_string( 3, datastring );
-
-  display_update();
-  tick( &mytime );
-  display_image(96, icon);
+		disableuart();
+		display_string( 2, datastring);
+	  display_update();
 	}
 
 	return 0;

@@ -22,21 +22,25 @@ void user_isr( void )
 //set up uart and start listening to the gps module
 void setupuart() {
   /*See PIC32MX3XX datasheet for addresses, Reference manual 21 for settings.*/
-  U2BRG = 0x208 // set uart baud to 9600 if pbclk is 1:1 and BRGH=0 [=(80Mhz/16/9600)-1]
-  U2STA = 0x1080 //00 0 1 0 0 0 0 10 0 0 0 0 0 0 set only RX, interrupt when buffer is 3/4 filled
-  U2MODE = 0x8000 //1 0 0 0 0 0 00 0 0 0 0 0 00 0 Enable UART2, no special options
+  U2BRG = 0x208; // set uart baud to 9600 if pbclk is 1:1 and BRGH=0 [=(80Mhz/16/9600)-1]
+  U2STA = 0x1080; //00 0 1 0 0 0 0 10 0 0 0 0 0 0 set only RX, interrupt when buffer is 3/4 filled
+  U2MODE = 0x8000; //1 0 0 0 0 0 00 0 0 0 0 0 00 0 Enable UART2, no special options
+}
+
+void disableuart() {
+  U2MODE = 0;
 }
 
 int datastringcounter = 0;
 
 //checks if there is a NMEA message in the uart buffer
-void lookforgga(char* datastring) {
+/*void lookforgga(char* datastring) {
   int* reg_u2sta = (int *) 0xBF806210; //UART2 status/control register
   _Bool data_available = 0;
 
   char screendelaycounter = 0; //skip every 20 updates so we get 60fps, not 1200 fps
   /*loop here, updating display until data is available*/
-  while(!data_available) {
+  /*while(!data_available) {
     delay( 1 );
 
     if(screendelaycounter > 19) {
@@ -54,13 +58,13 @@ void lookforgga(char* datastring) {
   }
 
   /* read byte from bus*/
-  int read_error = USTA & 0x0c; //check for PERR or FERR
+  /*int read_error = USTA & 0x0c; //check for PERR or FERR
   char newchar = (char) U2RXREG; //read byte
   if(read_error) newchar = '?';
 
   /*update datastring*/
   //if this is a new string or our string is too long already (might have missed a $), then reset the data string.
-  if(newchar == '$' || datastringcounter > 4 ) {
+  /*if(newchar == '$' || datastringcounter > 4 ) {
     datastring[0] = '$';
     datastring[1] = '\0';
     datastringcounter = 1;
@@ -70,4 +74,4 @@ void lookforgga(char* datastring) {
     datastringcounter++;
   }
 
-}
+}*/

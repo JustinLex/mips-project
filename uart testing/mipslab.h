@@ -20,6 +20,8 @@ void labwork(void);
 int nextprime( int inval );
 void quicksleep(int cyc);
 void tick( unsigned int * timep );
+void setupuart(void);
+void disableuart(void);
 
 /* Declare display_debug - a function to help debugging.
 

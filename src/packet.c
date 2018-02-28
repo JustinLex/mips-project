@@ -2,14 +2,13 @@
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "mipslab.h"  /* Declatations for these labs */
 
-#define MAGIC 0x8562 //"μb"
+#define MAGIC  //"μb"
 
 //functions for processing packet data, written mainly by Justin Lex
 
-uint32_t packet_start_bits = 0; //holds interpacket bits while we search for a packet header
+uint16_t packet_start_bits = 0; //holds interpacket bits while we search for a packet header
 
 _Bool in_packet = 0; // =1 when we have found header and are in packet
-uint8_t align_offset = 0; // holds the offset that the bytes are coming into the UART port
 
 uint16_t packet_type = 0;
 uint16_t payload_length = 0;
@@ -27,25 +26,6 @@ void reset_state() {
   header_bytes_read = 0;
   payload_bytes_read = 0;
   checksum_bytes_read = 0;
-}
-
-void scan_for_magic_bytes() {
-  //add new byte to pile
-  packet_start_bits <<= 8;
-  packet_start_bits |= read_shifted_byte(0);
-
-  //search through pile for magic bytes
-  int possible_offset;
-  for(possible_offset = 0; possible_offset < 16; possible_offset ++) {
-
-    uint16_t possible_start = (uint16_t) (packet_start_bits >> possible_offset);
-
-    if(possible_start == MAGIC) {
-      in_packet = 1;
-      align_offset = possible_offset;
-    }
-
-  }
 }
 
 calculate_checksum() {
@@ -99,6 +79,8 @@ void check_packet_and_store() {
   }
 }
 
+int count = 0;
+int lastbytes = 0;
 void handlepacket() {
 
   //check for framing error
@@ -108,28 +90,32 @@ void handlepacket() {
   }
 
   if(in_packet == 0) {
-    scan_for_magic_bytes();
+    packet_start_bits <<= 8;
+    packet_start_bits |= read_byte();
+    if ( packet_start_bits == 0xb562 ) { //magic bytes at the start of a UBX packet 0xb562
+      in_packet = 1;
+    }
   }
   else {
     switch(header_bytes_read) {
 
       case 0: //message class byte
-        packet_type = (uint16_t)read_shifted_byte(align_offset) << 8;
+        packet_type = (uint16_t)read_byte() << 8;
         header_bytes_read++;
         break;
 
       case 1: //message ID byte
-        packet_type |= read_shifted_byte(align_offset);
+        packet_type |= read_byte();
         header_bytes_read++;
         break;
 
       case 2: //length field MSB
-        payload_length = (uint16_t)read_shifted_byte(align_offset) << 8;
+        payload_length = (uint16_t)read_byte() << 8;
         header_bytes_read++;
         break;
 
       case 3: //length field LSB
-        payload_length |= read_shifted_byte(align_offset);
+        payload_length |= read_byte();
         header_bytes_read++;
         if(payload_length > 2048) { //drop packet if payload is too big
           reset_state();
@@ -139,15 +125,17 @@ void handlepacket() {
 
       default: //payload or checksum
         if (payload_bytes_read < payload_length) { //payload
-          payload[payload_bytes_read] = read_shifted_byte(align_offset);
+          payload[payload_bytes_read] = read_byte();
+          payload_bytes_read++;
         }
 
         else { //checksum
           if (checksum_bytes_read = 0) { //1st byte of cksm
-            checksum = (uint16_t)read_shifted_byte(align_offset) << 8;
+            checksum = (uint16_t)read_byte() << 8;
+            checksum_bytes_read++;
           }
           else { //2nd byte of cksm
-            checksum |= read_shifted_byte(align_offset);
+            checksum |= read_byte();
             check_packet_and_store();
           }
         }

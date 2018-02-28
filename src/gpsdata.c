@@ -13,8 +13,8 @@ uint32_t nav_clock_fAcc = 0; //Frequency accuracy estimate (picoseconds/second)
 //storing
 void store_nav_clock_payload(uint8_t* payload) {
   nav_clock_iTOW = *((uint32_t*)payload);
-  nav_clock_clkB = *((uint32_t*)(payload+4));
-  nav_clock_clkD = *((uint32_t*)(payload+8));
+  nav_clock_clkB = *((int32_t*)(payload+4));
+  nav_clock_clkD = *((int32_t*)(payload+8));
   nav_clock_tAcc = *((uint32_t*)(payload+12));
   nav_clock_fAcc = *((uint32_t*)(payload+16));
 }

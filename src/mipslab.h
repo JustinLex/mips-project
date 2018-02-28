@@ -11,10 +11,8 @@
 /* Declare UART bus functions from uart.c */
 void setupuart(void);
 void disableuart(void);
-void pull_in_uart_data(void);
-uint8_t read_shifted_byte(uint8_t shift_amt);
+uint8_t read_byte(void);
 void clear_framing_error(void);
-uint16_t* get_uart_buffer(void);
 
 /* Declare packet-handling functions from packet.c */
 void handlepacket(void);
@@ -22,6 +20,10 @@ void handlepacket(void);
 /* Declare packet data functions from gpsdata.c */
 void store_nav_clock_payload(uint8_t* payload);
 uint32_t* get_nav_clock_iTOW(void);
+int32_t* get_nav_clock_clkB(void);
+int32_t* get_nav_clock_cldD(void);
+uint32_t* get_nav_clock_tAcc(void);
+uint32_t* get_nav_clock_fAcc(void);
 
 /* Declare display-related functions from mipslabfunc.c */
 void display_image(int x, const uint8_t *data);

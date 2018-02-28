@@ -16,24 +16,11 @@ void disableuart() {
   U2MODE = 0;
 }
 
-
-/*functions to handle byte alignment on the bus*/
-uint16_t buffer = 0; //holds last two bytes read from UART bus, unaligned
-
-void pull_in_uart_data() {
-  buffer <<= 8; //shift out oldest byte
-  buffer |= U2RXREG; //read in newest byte
-}
-
-uint8_t read_shifted_byte( uint8_t shift_amt ) {
-  return (uint8_t) (buffer >> shift_amt);
+uint8_t read_byte() {
+  return U2RXREG;
 }
 
 void clear_framing_error() {
-  pull_in_uart_data(); //read the errored byte to clear the error
-  buffer = 0; //erase the buffer
-}
-
-uint16_t* get_uart_buffer() {
-  return &buffer;
+  int null = U2RXREG; //read the errored byte to clear the error
+  *((&U2STA)+4) = 0x2;
 }

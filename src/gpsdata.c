@@ -22,10 +22,10 @@ void store_nav_clock_payload(uint8_t* payload) {
 uint32_t* get_nav_clock_iTOW() {
   return &nav_clock_iTOW;
 }
-uint32_t* get_nav_clock_clkB() {
+int32_t* get_nav_clock_clkB() {
   return &nav_clock_clkB;
 }
-uint32_t* get_nav_clock_clkD() {
+int32_t* get_nav_clock_clkD() {
   return &nav_clock_clkD;
 }
 uint32_t* get_nav_clock_tAcc() {

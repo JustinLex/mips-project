@@ -42,6 +42,10 @@ void user_isr( void )
     IFSCLR(0) = 0x100;
   }
 
+  if(IFS(1) & 0x1) {
+  page_update();
+  IFSCLR(1) = 0x1;
+  }
   //button interrupts for changing pages?
   /*if(IFS(0) & 0x800) { //INT2
     tick( &mytime );
@@ -77,6 +81,14 @@ void labinit( void ) {
   IPC(8) = 0x1F; //set U2RX interrupts to highest priority
   IEC(1) = 0x100; //enable U2RX interrupts //TODO: (ISN'T LISTED IN 320 SERIES REGISTER DIAGRAM??)
   setupuart(); //initialize uart2 port
+
+  /*initialize change notice interrupt*/
+  CNCON = 0x8000; //enable change notice interrupts
+  CNEN = 0x18000; //enable CN15(BTN3) and CN16(BTN4)
+  PORTD = 0; //clear PORTD
+  IPC(6) = 0x170000; //set CN to 3rd highest priority
+  IFS(1) = 0; //clear CN interrupt flag
+  IEC(1) = (IEC(1)|1); //enable CN interrupt enable bit
 
   enable_interrupt();
 

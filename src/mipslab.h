@@ -7,6 +7,17 @@
 
    For copyright and licensing, see file COPYING */
 
+
+/* Declare UART bus functions from uart.c */
+void setupuart(void);
+void disableuart(void);
+void pull_in_uart_data(void);
+uint8_t read_shifted_byte(uint8_t shift_amt);
+void clear_framing_error(void);
+
+/* Declare packet-handling functions from packet.c */
+void handlepacket(void);
+
 /* Declare display-related functions from mipslabfunc.c */
 void display_image(int x, const uint8_t *data);
 void display_init(void);
@@ -20,10 +31,6 @@ void labwork(void);
 int nextprime( int inval );
 void quicksleep(int cyc);
 void tick( unsigned int * timep );
-
-//make uart bus control available to the display functions
-void setupuart(void);
-void disableuart(void);
 
 /* Declare display_debug - a function to help debugging.
 

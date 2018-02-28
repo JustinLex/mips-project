@@ -26,7 +26,10 @@ char textstring[] = "text, more text, and even more text!";
 /* Interrupt Service Routine */
 void user_isr( void )
 {
-  /*if uart interrupt, call uart packet handler
+  /*if uart interrupt, call uart packet handler*/
+  pull_in_uart_data();
+  handlepacket();
+  IFSCLR(1) = 0x100;
 
 
   if(IFS(0) & 0x100) { //T2
@@ -65,10 +68,10 @@ void labinit( void ) {
   IEC(0) = 0x100; //enable timer 2 interrupts
   T2CONSET = 0x8000; //enable timer
 
-  /*initialize uart2 interrupt*/
-  IFSCLR(1) = 0x200; //reset UART2 Interrupt flag
-  IPC(8) = 0x1F; //set UART2 interrupts to highest priority
-  IEC(0) = 0x100; //enable UART2 interrupts //TODO: (CANT FIND IN 320 SERIES REGISTER??)
+  /*initialize uart2 rx interrupt*/
+  IFSCLR(1) = 0x100; //reset U2RX Interrupt flag
+  IPC(8) = 0x1F; //set U2RX interrupts to highest priority
+  IEC(1) = 0x100; //enable U2RX interrupts //TODO: (ISN'T LISTED IN 320 SERIES REGISTER DIAGRAM??)
   setupuart(); //initialize uart2 port
 
   enable_interrupt();
@@ -80,17 +83,4 @@ void labwork( void ) {
   //format packets into ready-to-print strings and images
   //constantly handle button presses for screen change? or button interrupts?
   return;
-}
-
-//set up uart bus and start listening to the gps module
-void setupuart() {
-  /*See PIC32MX3XX datasheet for addresses, Reference manual 21 for settings.*/
-  U2BRG = 129; // set uart baud to 38400 baud when BRGH=0 [=(80Mhz/16/38400)-1]
-  U2STA = 0x1000; //00 0 1 0 0 0 0 00 0 0 0 0 0 0 set only RX, interrupt when buffer has data
-  U2MODE = 0x8000; //1 0 0 0 0 0 00 0 0 0 0 0 00 0 Enable UART2, no special options
-}
-
-//disable uart bus so we can update the display
-void disableuart() {
-  U2MODE = 0;
 }

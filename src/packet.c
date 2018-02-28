@@ -1,7 +1,8 @@
 #include <stdint.h>   /* Declarations of uint_32 and the like */
+#include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "mipslab.h"  /* Declatations for these labs */
 
-#define MAGIC = 0x8562 //"μb"
+#define MAGIC 0x8562 //"μb"
 
 //functions for processing packet data, written mainly by Justin Lex
 
@@ -17,7 +18,7 @@ uint8_t header_bytes_read = 0;
 uint16_t payload_bytes_read = 0;
 uint8_t checksum_bytes_read = 0;
 
-uint8_t payload[65536];
+uint8_t payload[2048];
 uint16_t checksum = 0;
 
 void reset_state() {
@@ -33,11 +34,11 @@ void scan_for_magic_bytes() {
   int possible_offset;
   for(possible_offset = 0; possible_offset < 16; possible_offset ++) {
 
-    uint16_t possible_start = (uint16_t) (packet_start_bits >> possible_offset)
+    uint16_t possible_start = (uint16_t) (packet_start_bits >> possible_offset);
 
     if(possible_start == MAGIC) {
       in_packet = 1;
-      align_offset = possible_offset
+      align_offset = possible_offset;
       packet_start_bits = 0;
     }
 
@@ -65,21 +66,21 @@ calculate_checksum() {
 
   //continue checksumming with payload bytes
   int i;
-  for(i = 0; i < payload_length; ++) {
+  for(i = 0; i < payload_length; i++) {
     ck_a += payload[i];
     ck_b += ck_a;
   }
 
   //package checksums together for return
   uint16_t checksums = ck_a;
-  uint16_t checksums <<= 8;
-  uint16_t checksums |= ck_b;
+  checksums <<= 8;
+  checksums |= ck_b;
 
   return checksums;
 }
 
 void check_packet_and_store() {
-  actual_checksum = calculate_checksum();
+  uint16_t actual_checksum = calculate_checksum();
   if(actual_checksum != checksum) {
     reset_state();
     return;
@@ -131,10 +132,14 @@ void handlepacket() {
       case 3: //length field LSB
         payload_length |= read_shifted_byte(align_offset);
         header_bytes_read++;
+        if(payload_length > 2048) { //drop packet if payload is too big
+          reset_state();
+          return;
+        }
         break;
 
       default: //payload or checksum
-        if (payload_bytes_read < packet_length) { //payload
+        if (payload_bytes_read < payload_length) { //payload
           payload[payload_bytes_read] = read_shifted_byte(align_offset);
         }
 

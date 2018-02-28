@@ -15,6 +15,7 @@
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "mipslab.h"  /* Declatations for these labs */
 
+uint16_t* uartbuffer;
 int prime = 1234567;
 
 int mytime = 0x0000;
@@ -27,13 +28,17 @@ char textstring[] = "text, more text, and even more text!";
 void user_isr( void )
 {
   /*if uart interrupt, call uart packet handler*/
+  if(IFS(1) & 0x100) {
   pull_in_uart_data();
-  handlepacket();
+  //handlepacket();
+
   IFSCLR(1) = 0x100;
+  }
 
 
   if(IFS(0) & 0x100) { //T2
     //see what page we're on, then write the correct data to the screen and update
+    display_debug(uartbuffer);
     display_update();
     IFSCLR(0) = 0x100;
   }
@@ -75,6 +80,8 @@ void labinit( void ) {
   setupuart(); //initialize uart2 port
 
   enable_interrupt();
+
+  uartbuffer = get_uart_buffer();
   return;
 }
 

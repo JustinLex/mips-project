@@ -14,6 +14,7 @@ void disableuart(void);
 void pull_in_uart_data(void);
 uint8_t read_shifted_byte(uint8_t shift_amt);
 void clear_framing_error(void);
+uint16_t* get_uart_buffer(void);
 
 /* Declare packet-handling functions from packet.c */
 void handlepacket(void);

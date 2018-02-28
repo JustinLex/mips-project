@@ -30,6 +30,10 @@ uint8_t read_shifted_byte( uint8_t shift_amt ) {
 }
 
 void clear_framing_error() {
-  pull_in_uart_data();
-  buffer = 0;
+  pull_in_uart_data(); //read the errored byte to clear the error
+  buffer = 0; //erase the buffer
+}
+
+uint16_t* get_uart_buffer() {
+  return &buffer;
 }

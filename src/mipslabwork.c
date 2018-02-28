@@ -29,8 +29,7 @@ void user_isr( void )
 {
   /*if uart interrupt, call uart packet handler*/
   if(IFS(1) & 0x100) {
-  pull_in_uart_data();
-  //handlepacket();
+  handlepacket();
 
   IFSCLR(1) = 0x100;
   }
@@ -38,8 +37,8 @@ void user_isr( void )
 
   if(IFS(0) & 0x100) { //T2
     //see what page we're on, then write the correct data to the screen and update
-    display_debug(uartbuffer);
-    display_update();
+    display_debug(get_nav_clock_iTOW());
+    //display_update();
     IFSCLR(0) = 0x100;
   }
 

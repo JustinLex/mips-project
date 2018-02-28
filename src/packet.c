@@ -22,7 +22,11 @@ uint8_t payload[2048];
 uint16_t checksum = 0;
 
 void reset_state() {
-  //TODO: reset global state of packet.c
+  packet_start_bits = 0;
+  in_packet = 0;
+  header_bytes_read = 0;
+  payload_bytes_read = 0;
+  checksum_bytes_read = 0;
 }
 
 void scan_for_magic_bytes() {
@@ -39,7 +43,6 @@ void scan_for_magic_bytes() {
     if(possible_start == MAGIC) {
       in_packet = 1;
       align_offset = possible_offset;
-      packet_start_bits = 0;
     }
 
   }
@@ -71,12 +74,8 @@ calculate_checksum() {
     ck_b += ck_a;
   }
 
-  //package checksums together for return
-  uint16_t checksums = ck_a;
-  checksums <<= 8;
-  checksums |= ck_b;
-
-  return checksums;
+  //package checksums together and return
+  return((uint16_t)ck_a << 8) | ck_b;
 }
 
 void check_packet_and_store() {
@@ -89,8 +88,8 @@ void check_packet_and_store() {
   //sort packet based on type
   switch(packet_type) {
 
-    case 0x00:
-      //stuff
+    case 0x0122: //UBX-NAV-CLOCK
+      store_nav_clock_payload(payload);
       reset_state();
       return;
 
@@ -115,7 +114,7 @@ void handlepacket() {
     switch(header_bytes_read) {
 
       case 0: //message class byte
-        packet_type = read_shifted_byte(align_offset) << 8;
+        packet_type = (uint16_t)read_shifted_byte(align_offset) << 8;
         header_bytes_read++;
         break;
 
@@ -125,7 +124,7 @@ void handlepacket() {
         break;
 
       case 2: //length field MSB
-        payload_length = read_shifted_byte(align_offset) << 8;
+        payload_length = (uint16_t)read_shifted_byte(align_offset) << 8;
         header_bytes_read++;
         break;
 
@@ -145,7 +144,7 @@ void handlepacket() {
 
         else { //checksum
           if (checksum_bytes_read = 0) { //1st byte of cksm
-            checksum = read_shifted_byte(align_offset) << 8;
+            checksum = (uint16_t)read_shifted_byte(align_offset) << 8;
           }
           else { //2nd byte of cksm
             checksum |= read_shifted_byte(align_offset);

@@ -19,6 +19,10 @@ uint16_t* get_uart_buffer(void);
 /* Declare packet-handling functions from packet.c */
 void handlepacket(void);
 
+/* Declare packet data functions from gpsdata.c */
+void store_nav_clock_payload(uint8_t* payload);
+uint32_t* get_nav_clock_iTOW(void);
+
 /* Declare display-related functions from mipslabfunc.c */
 void display_image(int x, const uint8_t *data);
 void display_init(void);

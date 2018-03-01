@@ -2,7 +2,16 @@
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "mipslab.h"  /* Declatations for these labs */
 
-//functions for processing packet data, written mainly by Justin Lex
+/*functions for processing packet data, written mainly by Justin Lex*/
+
+//Keeps track of which packet that we're either sending or looking for.
+//Set externally with set_packet_type().
+int packet_type_index = 0;
+
+void set_packet_type(int packet_index) {
+  packet_type_index = packet_index;
+}
+
 
 uint16_t packet_start_bits = 0; //holds interpacket bits while we search for a packet header
 
@@ -10,6 +19,11 @@ _Bool in_packet = 0; // =1 when we have found header and are in packet
 
 uint16_t packet_type = 0;
 uint16_t payload_length = 0;
+
+//Array used to convert between our packet type index and that packet's class and ID bytes
+uint16_t packet_type_table[1] = {
+  0x0107 //UBX-NAV-PVT
+}
 
 uint8_t header_bytes_read = 0;
 uint16_t payload_bytes_read = 0;
@@ -60,20 +74,21 @@ calculate_checksum() {
 void check_packet_and_store() {
   uint16_t actual_checksum = calculate_checksum();
   if(actual_checksum != checksum) {
-    reset_state();
+    reset_rx_state();
     return;
   }
    //TODO: change this to work with polling format
   //sort packet based on type
-  switch(packet_type) {
+  switch(packet_type_index) {
 
-    case 0x0122: //UBX-NAV-CLOCK
-      store_nav_clock_payload(payload);
-      reset_state();
+    case 0: //UBX-NAV-PVT
+      store_nav_pvt_payload(payload);
+      reset_rx_state();
+      pollseq_next_step();
       return;
 
-    default: //unused packet type
-      reset_state();
+    default: //glitch (invalid type index, and somehow we matched a packet ID with garbage?)
+      reset_rx_state();
       return;
   }
 }
@@ -83,7 +98,7 @@ void handlepacket() {
   //check for framing error
   if(U2STA & 0x2) {
     clear_framing_error();
-    reset_state();
+    reset_rx_state();
   }
 
   if(in_packet == 0) {
@@ -103,8 +118,15 @@ void handlepacket() {
 
       case 1: //message ID byte
         packet_type |= read_byte();
+
+        //drop packet if we're not waiting for it
+        if(packet_type != packet_type_table[packet_type_index]) {
+          reset_rx_state();
+          break;
+        }
+
         header_bytes_read++;
-        break; //TODO: change this to work with polling format
+        break;
 
       case 2: //length field MSB
         payload_length = (uint16_t)read_byte() << 8;
@@ -142,26 +164,20 @@ void handlepacket() {
   }
 }
 
-//Pregenerated packets used for polling data from the gps
+//Pregenerated packets used for polling data from the gps, ordered by packet_type_index
 //first number in the array contains the number of bytes we have to transmit,
 //the following numbers are the bytes that make up the packet.
 uint8_t pollpackets[1][8] = {
   {8,0xB5,0x62,0x01,0x07,0x00,0x00,0x08,0x25} //Poll for UBX-NAV-PVT
 }
 
-int packet_to_send = 0;
 int bytes_sent = 0;
 
-//tells send_packet_byte() what packet it should send
-void set_packet(int packet_nr) {
-  packet_to_send = packet_nr;
-}
-
 void send_packet_byte() {}
-  int bytes_to_send = pollpackets[packet_to_send][0];
+  int bytes_to_send = pollpackets[packet_type_index][0];
 
   if(bytes_sent < bytes_to_send) { //send next byte
-    U2TX = pollpackets[packet_to_send][bytes_sent+1];
+    U2TX = pollpackets[packet_type_index][bytes_sent+1];
     bytes_sent++;
   }
 

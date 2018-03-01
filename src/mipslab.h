@@ -24,12 +24,13 @@ void set_packet(int packet_nr);
 void send_packet_byte(void);
 
 /* Declare packet data functions from gpsdata.c */
-void store_nav_clock_payload(uint8_t* payload);
+void store_nav_pvt_payload(uint8_t* payload);
 uint32_t* get_nav_clock_iTOW(void);
 int32_t* get_nav_clock_clkB(void);
 int32_t* get_nav_clock_cldD(void);
 uint32_t* get_nav_clock_tAcc(void);
 uint32_t* get_nav_clock_fAcc(void);
+//TODO: macro
 
 /* Deckare UI functions */
 void display_page(void);

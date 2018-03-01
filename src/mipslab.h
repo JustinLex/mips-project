@@ -7,15 +7,21 @@
 
    For copyright and licensing, see file COPYING */
 
+/* Declare Poll sequence functions from polling.c */
+void poll(void);
+void pollseq_next_step(void);
 
 /* Declare UART bus functions from uart.c */
-void setupuart(void);
+void uart_start_tx(void);
+void uart_start_rx(void);
 void disableuart(void);
 uint8_t read_byte(void);
 void clear_framing_error(void);
 
 /* Declare packet-handling functions from packet.c */
 void handlepacket(void);
+void set_packet(int packet_nr);
+void send_packet_byte(void);
 
 /* Declare packet data functions from gpsdata.c */
 void store_nav_clock_payload(uint8_t* payload);

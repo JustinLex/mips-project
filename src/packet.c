@@ -18,7 +18,8 @@ uint8_t checksum_bytes_read = 0;
 uint8_t payload[2048];
 uint16_t checksum = 0;
 
-void reset_state() {
+
+void reset_rx_state() {
   packet_start_bits = 0;
   in_packet = 0;
   header_bytes_read = 0;
@@ -62,7 +63,7 @@ void check_packet_and_store() {
     reset_state();
     return;
   }
-
+   //TODO: change this to work with polling format
   //sort packet based on type
   switch(packet_type) {
 
@@ -103,7 +104,7 @@ void handlepacket() {
       case 1: //message ID byte
         packet_type |= read_byte();
         header_bytes_read++;
-        break;
+        break; //TODO: change this to work with polling format
 
       case 2: //length field MSB
         payload_length = (uint16_t)read_byte() << 8;
@@ -139,4 +140,34 @@ void handlepacket() {
     }
 
   }
+}
+
+//Pregenerated packets used for polling data from the gps
+//first number in the array contains the number of bytes we have to transmit,
+//the following numbers are the bytes that make up the packet.
+uint8_t pollpackets[1][8] = {
+  {8,0xB5,0x62,0x01,0x07,0x00,0x00,0x08,0x25} //Poll for UBX-NAV-PVT
+}
+
+int packet_to_send = 0;
+int bytes_sent = 0;
+
+//tells send_packet_byte() what packet it should send
+void set_packet(int packet_nr) {
+  packet_to_send = packet_nr;
+}
+
+void send_packet_byte() {}
+  int bytes_to_send = pollpackets[packet_to_send][0];
+
+  if(bytes_sent < bytes_to_send) { //send next byte
+    U2TX = pollpackets[packet_to_send][bytes_sent+1];
+    bytes_sent++;
+  }
+
+  else { //we finished the packet, lock until TX buffer is completely empty and then report back to poll sequencer
+    while(U2STA & 0x100);
+    pollseq_next_step();
+  }
+
 }

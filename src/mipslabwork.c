@@ -26,12 +26,15 @@ char textstring[] = "text, more text, and even more text!";
 /* Interrupt Service Routine */
 void user_isr( void )
 {
-  /*if uart RX interrupt, call uart packet handler*/
-  if(IFS(1) & 0x200) {
-    //int a_byte = read_byte();
-    //display_debug(&a_byte);
+
+  if(IFS(1) & 0x200) { //U2RX (UART recieve)
     handlepacket();
     IFSCLR(1) = 0x200;
+  }
+
+  if(IFS(1) & 0x400) { //U2TX (UART transmit)
+    send_packet_byte();
+    IFSCLR(1) = 0x400;
   }
 
 
@@ -39,6 +42,7 @@ void user_isr( void )
     //see what page we're on, then write the correct data to the screen and update
     //display_debug(get_nav_clock_iTOW());
     //display_update();
+    //TODO: call polling sequence regularly
     IFSCLR(0) = 0x100;
   }
 
@@ -78,13 +82,13 @@ void labinit( void ) {
 
   /*initialize uart2 rx interrupt*/
   IFSCLR(1) = 0x200; //reset U2RX Interrupt flag
-  IPC(8) = 0x1F; //set U2RX interrupts to highest priority
-  IEC(1) = 0x200; //enable U2RX interrupts //Undocumented register! :D
+  IPC(8) = 0x1F; //set UART2 interrupts to highest priority
+  IEC(1) = 0x200; //enable U2RX interrupts (Undocumented register! :D )
 
   /*initialize uart2 tx interrupt*/
   IFSCLR(1) = 0x400; //reset U2TX Interrupt flag
-  IPC(8) = 0x1F; //set U2RX interrupts to highest priority
-  IEC(1) = 0x400; //enable U2TX interrupts //Undocumented register! :D
+  IPC(8) = 0x1F; //set UART2 interrupts to highest priority
+  IEC(1) = 0x400; //enable U2TX interrupts (Undocumented register! :D )
 
 
   /*initialize change notice interrupt*/

@@ -15,7 +15,7 @@ uint8_t header_bytes_read = 0;
 uint16_t payload_bytes_read = 0;
 uint8_t checksum_bytes_read = 0;
 
-uint8_t payload[2048];
+uint8_t payload[512];
 uint16_t checksum = 0;
 
 
@@ -114,8 +114,8 @@ void handlepacket() {
       case 3: //length field LSB
         payload_length |= read_byte();
         header_bytes_read++;
-        if(payload_length > 2048) { //drop packet if payload is too big
-          reset_state();
+        if(payload_length > 512) { //drop packet if payload is too big
+          reset_rx_state();
           return;
         }
         break;

@@ -31,5 +31,5 @@ uint8_t read_byte() {
 
 void clear_framing_error() {
   int null = U2RXREG; //read the errored byte to clear the error
-  *((&U2STA)+4) = 0x2;
+  *((&U2STA)+4) = 0x2; //clear FERR bit
 }

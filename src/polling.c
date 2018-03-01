@@ -15,8 +15,10 @@ void poll(){
 //poll sequencer, calling it either begins a poll sequence, or executes
 //the next step in the poll sequence
 void pollseq_next_step() {
+
   switch (current_step) {
     case 0: //Poll UBX-NAV-PVT data
+      //display_page(); //update screen before activating bus
       set_packet(0);
       current_step++;
       uart_start_tx();
@@ -30,9 +32,9 @@ void pollseq_next_step() {
       uart_start_rx();
       break;
 
-    default:
+    default: //sequence finished, reset sequence and update screen
       current_step = 0;
+      //display_page();
   }
-
 
 }

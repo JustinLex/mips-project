@@ -26,9 +26,9 @@ uint32_t* get_nav_clock_tAcc(void);
 uint32_t* get_nav_clock_fAcc(void);
 
 /* Deckare UI functions */
-void display_page(void)
-void page_update(void)
-int getbtns(void)
+void display_page(void);
+void page_update(void);
+int getbtns(void);
 
 /* Declare display-related functions from mipslabfunc.c */
 void display_image(int x, const uint8_t *data);

@@ -6,6 +6,9 @@
 /*shared variables*/
 uint32_t iTOW = 0; //GPS time of week (milliseconds)
 
+//macro for pulling data out of payload
+#define EXTRACT(var, type, offset) var = *((type*)(payload+offset));
+
 /*UBX-NAV-CLOCK "Clock Solution"*/
 //unique variables
 uint16_t year = 0; //current UTC year (years)
@@ -22,7 +25,24 @@ int32_t nano = 0; //current UTC nanosecond (nanoseconds)
 
 // payload storer
 void store_nav_clock_payload(uint8_t* payload) {
-  iTOW = *((uint32_t*)(payload+0));
+  EXTRACT(iTOW, uint32_t, 0)
+  EXTRACT(year, uint16_t, 4)
+  EXTRACT(month, uint8_t, 6)
+  EXTRACT(day, uint8_t, 7)
+  EXTRACT(hour, uint8_t, 8)
+  EXTRACT(min, uint8_t, 9)
+  EXTRACT(sec, uint8_t, 10)
+
+  int valid = *((uint8_t*)(payload+11));
+  validDate = valid & 0x1;
+  validTime = valid & 0x2;
+  fullyResolved = valid & 0x4;
+
+  EXTRACT(iTOW, uint32_t, 12)
+  EXTRACT(iTOW, int32_t, 16)
+
+  
+  /*iTOW = *((uint32_t*)(payload+0));
   year = *((uint16_t*)(payload+4));
   month = *((uint8_t*)(payload+6));
   day = *((uint8_t*)(payload+7));
@@ -36,30 +56,30 @@ void store_nav_clock_payload(uint8_t* payload) {
   fullyResolved = valid & 0x4;
 
   tAcc = *((uint32_t*)(payload+12));
-  nano = *((int32_t*)(payload+16));
+  nano = *((int32_t*)(payload+16));*/
 }
 
 /*getters*/
 
 //macro used to define getters
-#define getter(type, var) \
+#define GETTER(type, var) \
   type* get_var() { \
     return &var; \
   }
 
 //create getter functions with macro
-getter(uint32_t, iTOW)
-getter(uint16_t, year)
-getter(uint8_t, month)
-getter(uint8_t, day)
-getter(uint8_t, hour)
-getter(uint8_t, min)
-getter(uint8_t, sec)
-getter(_Bool, validDate)
-getter(_Bool, validTime)
-getter(_Bool, fullyResolved)
-getter(uint32_t, tAcc)
-getter(int32_t, nano)
+GETTER(uint32_t, iTOW)
+GETTER(uint16_t, year)
+GETTER(uint8_t, month)
+GETTER(uint8_t, day)
+GETTER(uint8_t, hour)
+GETTER(uint8_t, min)
+GETTER(uint8_t, sec)
+GETTER(_Bool, validDate)
+GETTER(_Bool, validTime)
+GETTER(_Bool, fullyResolved)
+GETTER(uint32_t, tAcc)
+GETTER(int32_t, nano)
 
 
 /*uint32_t* get_iTOW() {

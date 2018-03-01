@@ -2,8 +2,6 @@
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "mipslab.h"  /* Declatations for these labs */
 
-#define MAGIC  //"μb"
-
 //functions for processing packet data, written mainly by Justin Lex
 
 uint16_t packet_start_bits = 0; //holds interpacket bits while we search for a packet header
@@ -79,8 +77,6 @@ void check_packet_and_store() {
   }
 }
 
-int count = 0;
-int lastbytes = 0;
 void handlepacket() {
 
   //check for framing error

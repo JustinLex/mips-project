@@ -82,13 +82,11 @@ void tick( unsigned int * timep )
 */
 void display_debug( volatile int * const addr )
 {
-	disableuart();
   display_string( 1, "Addr" );
   display_string( 2, "Data" );
   num32asc( &textbuffer[1][6], (int) addr );
   num32asc( &textbuffer[2][6], *addr );
   display_update();
-	setupuart();
 }
 
 uint8_t spi_send_recv(uint8_t data) {

@@ -26,23 +26,23 @@ char textstring[] = "text, more text, and even more text!";
 /* Interrupt Service Routine */
 void user_isr( void )
 {
-  /*if uart interrupt, call uart packet handler*/
-  if(IFS(1) & 0x100) {
+  /*if uart RX interrupt, call uart packet handler*/
+  if(IFS(1) & 0x200) {
     //int a_byte = read_byte();
     //display_debug(&a_byte);
     handlepacket();
-    IFSCLR(1) = 0x100;
+    IFSCLR(1) = 0x200;
   }
 
 
-  if(IFS(0) & 0x100) { //T2
+  if(IFS(0) & 0x100) { //T2 (Screen timer)
     //see what page we're on, then write the correct data to the screen and update
     //display_debug(get_nav_clock_iTOW());
     //display_update();
     IFSCLR(0) = 0x100;
   }
 
-  if(IFS(1) & 0x1) {
+  if(IFS(1) & 0x1) { // CN (button press)
   page_update();
   IFSCLR(1) = 0x1;
   }
@@ -77,10 +77,15 @@ void labinit( void ) {
   T2CONSET = 0x8000; //enable timer
 
   /*initialize uart2 rx interrupt*/
-  IFSCLR(1) = 0x100; //reset U2RX Interrupt flag
+  IFSCLR(1) = 0x200; //reset U2RX Interrupt flag
   IPC(8) = 0x1F; //set U2RX interrupts to highest priority
-  IEC(1) = 0x100; //enable U2RX interrupts //TODO: (ISN'T LISTED IN 320 SERIES REGISTER DIAGRAM??)
-  setupuart(); //initialize uart2 port
+  IEC(1) = 0x200; //enable U2RX interrupts //Undocumented register! :D
+
+  /*initialize uart2 tx interrupt*/
+  IFSCLR(1) = 0x400; //reset U2TX Interrupt flag
+  IPC(8) = 0x1F; //set U2RX interrupts to highest priority
+  IEC(1) = 0x400; //enable U2TX interrupts //Undocumented register! :D
+
 
   /*initialize change notice interrupt*/
   CNCON = 0x8000; //enable change notice interrupts

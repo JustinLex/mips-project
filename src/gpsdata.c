@@ -7,9 +7,9 @@
 uint32_t iTOW = 0; //GPS time of week (milliseconds)
 
 //macro for pulling data out of payload
-#define EXTRACT(var, type, offset) var = *((type*)(payload+offset));
+#define EXTRACT(VAR, TYPE, OFFSET) VAR = *((TYPE*)(payload+OFFSET));
 
-/*UBX-NAV-CLOCK "Clock Solution"*/
+/*UBX-NAV-PVT ""*/
 //unique variables
 uint16_t year = 0; //current UTC year (years)
 uint8_t month = 0; //current UTC month (months)
@@ -24,7 +24,7 @@ uint32_t tAcc = 0; //time accuracy estimate (±nanoseconds)
 int32_t nano = 0; //current UTC nanosecond (nanoseconds)
 
 // payload storer
-void store_nav_clock_payload(uint8_t* payload) {
+void store_nav_pvt_payload(uint8_t* payload) {
   EXTRACT(iTOW, uint32_t, 0)
   EXTRACT(year, uint16_t, 4)
   EXTRACT(month, uint8_t, 6)
@@ -41,7 +41,7 @@ void store_nav_clock_payload(uint8_t* payload) {
   EXTRACT(iTOW, uint32_t, 12)
   EXTRACT(iTOW, int32_t, 16)
 
-  
+
   /*iTOW = *((uint32_t*)(payload+0));
   year = *((uint16_t*)(payload+4));
   month = *((uint8_t*)(payload+6));
@@ -62,10 +62,7 @@ void store_nav_clock_payload(uint8_t* payload) {
 /*getters*/
 
 //macro used to define getters
-#define GETTER(type, var) \
-  type* get_var() { \
-    return &var; \
-  }
+#define GETTER(TYPE, VAR) TYPE* get_##VAR() { return &VAR; }
 
 //create getter functions with macro
 GETTER(uint32_t, iTOW)

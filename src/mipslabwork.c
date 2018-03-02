@@ -15,12 +15,6 @@
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "mipslab.h"  /* Declatations for these labs */
 
-int prime = 1234567;
-uint8_t page = 1;
-int mytime = 0x0000;
-
-uint8_t timeoutcount = 0;
-
 char textstring[] = "text, more text, and even more text!";
 
 /* Interrupt Service Routine */
@@ -106,7 +100,7 @@ void labinit( void ) {
 
 /* This function is called repetitively from the main program */
 void labwork( void ) {
-  display_page();
+  //display_page();
   //format packets into ready-to-print strings and images
   //constantly handle button presses for screen change? or button interrupts?
   return;

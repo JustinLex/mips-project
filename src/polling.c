@@ -19,13 +19,13 @@ void pollseq_next_step() {
   switch (current_step) {
     case 0: //Poll UBX-NAV-PVT data
       //display_page(); //update screen before activating bus
-      set_packet(0); //tell packet.c what packet to send
+      set_packet_type(0); //tell packet.c what packet to send
       current_step++;
       uart_start_tx(); //enable tx bus, packet will send after interrupt
       break;
 
     case 1: //recieve packets until we get back our UBX-NAV-PVT packet
-      set_packet(0); //tell packet.c what kind of packet to look for
+      set_packet_type(0); //tell packet.c what kind of packet to look for
       //TODO:maybe set a timeout?
       current_step++;
       uart_start_rx(); //enable rx bus, packets will automically parse as they're recieved

@@ -4,15 +4,6 @@
 
 /*functions for processing packet data, written mainly by Justin Lex*/
 
-//Keeps track of which packet that we're either sending or looking for.
-//Set externally with set_packet_type().
-int packet_type_index = 0;
-
-void set_packet_type(int packet_index) {
-  packet_type_index = packet_index;
-}
-
-
 uint16_t packet_start_bits = 0; //holds interpacket bits while we search for a packet header
 
 _Bool in_packet = 0; // =1 when we have found header and are in packet
@@ -20,10 +11,6 @@ _Bool in_packet = 0; // =1 when we have found header and are in packet
 uint16_t packet_type = 0;
 uint16_t payload_length = 0;
 
-//Array used to convert between our packet type index and that packet's class and ID bytes
-static uint16_t packet_type_table[1] = {
-  0x0107 //UBX-NAV-PVT
-};
 
 uint8_t header_bytes_read = 0;
 uint16_t payload_bytes_read = 0;
@@ -77,15 +64,14 @@ void check_packet_and_store() {
     reset_rx_state();
     return;
   }
-  switch(packet_type_index) {
+  switch(packet_type) {
 
-    case 0: //UBX-NAV-PVT
+    case 0x0107: //UBX-NAV-PVT
       store_nav_pvt_payload(payload);
       reset_rx_state();
-      //pollseq_next_step();
       return;
 
-    default: //glitch (invalid type index, and somehow we matched a packet ID with garbage?)
+    default: //unused packet type
       reset_rx_state();
       return;
   }
@@ -158,28 +144,5 @@ volatile void handlepacket() {
     }
 
   }
-  IFSCLR(1) = 0x200;
-}
-
-//Pregenerated packets used for polling data from the gps, ordered by packet_type_index
-//first number in the array contains the number of bytes we have to transmit,
-//the following numbers are the bytes that make up the packet.
-static uint32_t pollpackets[9] = {8,0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38};//{8,0xB5,0x62,0x01,0x07,0x00,0x00,0x08,0x19}; //Poll for UBX-NAV-PVT, 8 bytes
-
-void send_packet(int type) {
-  packet_type_index = type;
-  int bytes_sent = 0;
-
-  uart_start_tx(); //open uart port
-
-  while(bytes_sent < pollpackets[0]) { //send bytes
-    while(U2STA & 0x200); //only transmit when tx buffer isn't full
-    U2TXREG = (uint8_t) pollpackets[bytes_sent+1];
-    bytes_sent++;
-  }
-
-  //we finished the packet, lock until TX buffer is completely empty and then report back to poll sequencer
-  while(!(U2STA & 0x100));
-  disableuart();
-  pollseq_next_step();
+  IFSCLR(1) = 0x200; //clear U2RX interrupt flag
 }

@@ -40,23 +40,6 @@ void store_nav_pvt_payload(uint8_t* payload) {
 
   EXTRACT(tAcc, uint32_t, 12)
   EXTRACT(nano, int32_t, 16)
-
-
-  /*iTOW = *((uint32_t*)(payload+0));
-  year = *((uint16_t*)(payload+4));
-  month = *((uint8_t*)(payload+6));
-  day = *((uint8_t*)(payload+7));
-  hour = *((uint8_t*)(payload+8));
-  min = *((uint8_t*)(payload+9));
-  sec = *((uint8_t*)(payload+10));
-
-  int valid = *((uint8_t*)(payload+11));
-  validDate = valid & 0x1;
-  validTime = valid & 0x2;
-  fullyResolved = valid & 0x4;
-
-  tAcc = *((uint32_t*)(payload+12));
-  nano = *((int32_t*)(payload+16));*/
 }
 
 /*getters*/
@@ -77,20 +60,3 @@ GETTER(_Bool, validTime)
 GETTER(_Bool, fullyResolved)
 GETTER(uint32_t, tAcc)
 GETTER(int32_t, nano)
-
-
-/*uint32_t* get_iTOW() {
-  return &nav_clock_iTOW;
-}
-int32_t* get_nav_clock_clkB() {
-  return &nav_clock_clkB;
-}
-int32_t* get_nav_clock_clkD() {
-  return &nav_clock_clkD;
-}
-uint32_t* get_nav_clock_tAcc() {
-  return &nav_clock_tAcc;
-}
-uint32_t* get_nav_clock_fAcc() {
-  return &nav_clock_fAcc;
-}*/

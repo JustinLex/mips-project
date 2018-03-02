@@ -85,8 +85,6 @@ void labinit( void ) {
   IPC(8) = 0x1F; //set UART2 interrupts to highest priority
   IEC(1) = 0x200; //enable U2RX interrupts (Undocumented register! :D )
 
-  uart_start_rx();
-
   /*initialize uart2 tx interrupt*/
   IFSCLR(1) = 0x400; //reset U2TX Interrupt flag
   IPC(8) = 0x1F; //set UART2 interrupts to highest priority

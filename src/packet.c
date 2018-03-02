@@ -185,6 +185,7 @@ void send_packet_byte() {
 
   else { //we finished the packet, lock until TX buffer is completely empty and then report back to poll sequencer
     while(U2STA & 0x100);
+    disableuart();
     pollseq_next_step();
   }
 

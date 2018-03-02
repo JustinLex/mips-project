@@ -38,8 +38,8 @@ void store_nav_pvt_payload(uint8_t* payload) {
   validTime = valid & 0x2;
   fullyResolved = valid & 0x4;
 
-  EXTRACT(iTOW, uint32_t, 12)
-  EXTRACT(iTOW, int32_t, 16)
+  EXTRACT(tAcc, uint32_t, 12)
+  EXTRACT(nano, int32_t, 16)
 
 
   /*iTOW = *((uint32_t*)(payload+0));

@@ -142,7 +142,6 @@ void display_string(int line, char *s) {
 }
 
 void display_image(int x, const uint8_t *data) {
-	disableuart();
 	int i, j;
 
 	for(i = 0; i < 4; i++) {
@@ -159,11 +158,9 @@ void display_image(int x, const uint8_t *data) {
 		for(j = 0; j < 32; j++)
 			spi_send_recv(~data[i*32 + j]);
 	}
-	setupuart();
 }
 
 void display_update(void) {
-	disableuart();
 	int i, j, k;
 	int c;
 	for(i = 0; i < 4; i++) {
@@ -185,7 +182,6 @@ void display_update(void) {
 				spi_send_recv(font[c*8 + k]);
 		}
 	}
-	setupuart();
 }
 
 /* Helper function, local to this file.

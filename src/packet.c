@@ -23,7 +23,7 @@ uint16_t payload_length = 0;
 //Array used to convert between our packet type index and that packet's class and ID bytes
 uint16_t packet_type_table[1] = {
   0x0107 //UBX-NAV-PVT
-}
+};
 
 uint8_t header_bytes_read = 0;
 uint16_t payload_bytes_read = 0;
@@ -167,16 +167,15 @@ void handlepacket() {
 //Pregenerated packets used for polling data from the gps, ordered by packet_type_index
 //first number in the array contains the number of bytes we have to transmit,
 //the following numbers are the bytes that make up the packet.
-uint8_t pollpackets[1][8] = {
+uint8_t pollpackets[1][9] = {
   {8,0xB5,0x62,0x01,0x07,0x00,0x00,0x08,0x25} //Poll for UBX-NAV-PVT
-}
+};
 
 int bytes_sent = 0;
 
-void send_packet_byte() {}
-  int bytes_to_send = pollpackets[packet_type_index][0];
+void send_packet_byte() {
 
-  if(bytes_sent < bytes_to_send) { //send next byte
+  if(bytes_sent < pollpackets[packet_type_index][0]) { //send next byte
     U2TX = pollpackets[packet_type_index][bytes_sent+1];
     bytes_sent++;
   }

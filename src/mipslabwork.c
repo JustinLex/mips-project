@@ -22,13 +22,12 @@ void user_isr( void )
 {
 
   if(IFS(1) & 0x200) { //U2RX (UART recieve)
-    handlepacket();
-    IFSCLR(1) = 0x200;
-  }
+    //disableuart();
+    //display_debug(textstring);
 
-  if(IFS(1) & 0x400) { //U2TX (UART transmit)
-    send_packet_byte();
-    IFSCLR(1) = 0x400;
+    while(U2STA & 0x1) { //interrupt only triggers once on RX, so we need to loop until we've read them all
+      handlepacket();
+    }
   }
 
 
@@ -41,7 +40,8 @@ void user_isr( void )
   }
 
   if(IFS(1) & 0x1) { // CN (button press)
-  page_update();
+  //page_update();
+  //poll();
   IFSCLR(1) = 0x1;
   }
   //button interrupts for changing pages?
@@ -82,9 +82,9 @@ void labinit( void ) {
   uart_start_rx();
 
   /*initialize uart2 tx interrupt*/
-  IFSCLR(1) = 0x400; //reset U2TX Interrupt flag
-  IPC(8) = 0x1F; //set UART2 interrupts to highest priority
-  IEC(1) = 0x400; //enable U2TX interrupts (Undocumented register! :D )
+  //IFSCLR(1) = 0x400; //reset U2TX Interrupt flag
+  //IPC(8) = 0x1F; //set UART2 interrupts to highest priority
+  //IEC(1) = 0x400; //enable U2TX interrupts (Undocumented register! :D )
 
 
   /*initialize change notice interrupt*/
@@ -97,6 +97,8 @@ void labinit( void ) {
 
   enable_interrupt();
 
+  uart_start_rx();
+
   return;
 }
 
@@ -105,5 +107,11 @@ void labwork( void ) {
   //display_page();
   //format packets into ready-to-print strings and images
   //constantly handle button presses for screen change? or button interrupts?
+  delay(700);
+  int temp = *(get_sec());
+  display_debug(&temp);
+
+  //int test = get_min();
+  //display_debug(&test);
   return;
 }

@@ -21,7 +21,7 @@ void clear_framing_error(void);
 /* Declare packet-handling functions from packet.c */
 void handlepacket(void);
 void set_packet(int packet_nr);
-void send_packet_byte(void);
+void send_packet(int type);
 
 /* Declare packet data functions from gpsdata.c */
 

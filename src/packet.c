@@ -21,7 +21,7 @@ uint16_t packet_type = 0;
 uint16_t payload_length = 0;
 
 //Array used to convert between our packet type index and that packet's class and ID bytes
-uint16_t packet_type_table[1] = {
+static uint16_t packet_type_table[1] = {
   0x0107 //UBX-NAV-PVT
 };
 
@@ -53,10 +53,10 @@ calculate_checksum() {
   ck_a += (packet_type) & 0xff;
   ck_b += ck_a;
 
-  ck_a += (payload_length >> 8) & 0xff;
+  ck_a += (payload_length) & 0xff;
   ck_b += ck_a;
 
-  ck_a += (payload_length) & 0xff;
+  ck_a += (payload_length >> 8) & 0xff;
   ck_b += ck_a;
 
 
@@ -68,23 +68,21 @@ calculate_checksum() {
   }
 
   //package checksums together and return
-  return((uint16_t)ck_a << 8) | ck_b;
+  return(((uint16_t)ck_a << 8) | ck_b);
 }
 
 void check_packet_and_store() {
-  uint16_t actual_checksum = calculate_checksum();
+  uint32_t actual_checksum = calculate_checksum();
   if(actual_checksum != checksum) {
     reset_rx_state();
     return;
   }
-   //TODO: change this to work with polling format
-  //sort packet based on type
   switch(packet_type_index) {
 
     case 0: //UBX-NAV-PVT
       store_nav_pvt_payload(payload);
       reset_rx_state();
-      pollseq_next_step();
+      //pollseq_next_step();
       return;
 
     default: //glitch (invalid type index, and somehow we matched a packet ID with garbage?)
@@ -93,7 +91,7 @@ void check_packet_and_store() {
   }
 }
 
-void handlepacket() {
+volatile void handlepacket() {
 
   //check for framing error
   if(U2STA & 0x2) {
@@ -104,7 +102,8 @@ void handlepacket() {
   if(in_packet == 0) {
     packet_start_bits <<= 8;
     packet_start_bits |= read_byte();
-    if ( packet_start_bits == 0xb562 ) { //magic bytes at the start of a UBX packet 0xb562
+
+    if ( packet_start_bits == 0xb562 ) { //magic bytes at the start of a UBX packet
       in_packet = 1;
     }
   }
@@ -112,33 +111,30 @@ void handlepacket() {
     switch(header_bytes_read) {
 
       case 0: //message class byte
-        packet_type = (uint16_t)read_byte() << 8;
+        packet_type = (uint16_t) read_byte() << 8;
         header_bytes_read++;
         break;
 
       case 1: //message ID byte
         packet_type |= read_byte();
-
         //drop packet if we're not waiting for it
         if(packet_type != packet_type_table[packet_type_index]) {
           reset_rx_state();
           break;
         }
-
         header_bytes_read++;
         break;
 
       case 2: //length field MSB
-        payload_length = (uint16_t)read_byte() << 8;
+        payload_length = read_byte() ;
         header_bytes_read++;
         break;
 
       case 3: //length field LSB
-        payload_length |= read_byte();
+        payload_length |= (uint16_t) read_byte() << 8;
         header_bytes_read++;
         if(payload_length > 512) { //drop packet if payload is too big
           reset_rx_state();
-          return;
         }
         break;
 
@@ -149,7 +145,7 @@ void handlepacket() {
         }
 
         else { //checksum
-          if (checksum_bytes_read = 0) { //1st byte of cksm
+          if (checksum_bytes_read == 0) { //1st byte of cksm
             checksum = (uint16_t)read_byte() << 8;
             checksum_bytes_read++;
           }
@@ -162,27 +158,28 @@ void handlepacket() {
     }
 
   }
+  IFSCLR(1) = 0x200;
 }
 
 //Pregenerated packets used for polling data from the gps, ordered by packet_type_index
 //first number in the array contains the number of bytes we have to transmit,
 //the following numbers are the bytes that make up the packet.
-uint8_t pollpackets[1][9] = {
-  {8,0xB5,0x62,0x01,0x07,0x00,0x00,0x08,0x25} //Poll for UBX-NAV-PVT
-};
+static uint32_t pollpackets[9] = {8,0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38};//{8,0xB5,0x62,0x01,0x07,0x00,0x00,0x08,0x19}; //Poll for UBX-NAV-PVT, 8 bytes
 
-int bytes_sent = 0;
+void send_packet(int type) {
+  packet_type_index = type;
+  int bytes_sent = 0;
 
-void send_packet_byte() {
+  uart_start_tx(); //open uart port
 
-  if(bytes_sent < pollpackets[packet_type_index][0]) { //send next byte
-    U2TX = pollpackets[packet_type_index][bytes_sent+1];
+  while(bytes_sent < pollpackets[0]) { //send bytes
+    while(U2STA & 0x200); //only transmit when tx buffer isn't full
+    U2TXREG = (uint8_t) pollpackets[bytes_sent+1];
     bytes_sent++;
   }
 
-  else { //we finished the packet, lock until TX buffer is completely empty and then report back to poll sequencer
-    while(U2STA & 0x100);
-    pollseq_next_step();
-  }
-
+  //we finished the packet, lock until TX buffer is completely empty and then report back to poll sequencer
+  while(!(U2STA & 0x100));
+  disableuart();
+  pollseq_next_step();
 }

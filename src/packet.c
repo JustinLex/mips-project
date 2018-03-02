@@ -105,7 +105,10 @@ void handlepacket() {
     packet_start_bits <<= 8;
     packet_start_bits |= read_byte();
     if ( packet_start_bits == 0xb562 ) { //magic bytes at the start of a UBX packet 0xb562
-      in_packet = 1;
+      //in_packet = 1;
+      disableuart();
+      display_debug(&packet_start_bits);
+
     }
   }
   else {

@@ -38,7 +38,7 @@ static char month[12][3] = {
   "Oct",
   "Nov",
   "Dec"
-}
+};
 
 
 void page_update(void)

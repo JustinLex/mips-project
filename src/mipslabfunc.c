@@ -258,7 +258,7 @@ static void num32asc( char * s, int n )
  * 64-bit quantities; however, the size of an int on your current compiler
  * may not allow this straight away.
  */
-#define ITOA_BUFSIZ ( 24 )
+#define ITOA_BUFSIZ ( 12 )
 char * itoaconv( int num )
 {
   register int i, sign;

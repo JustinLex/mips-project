@@ -22,7 +22,23 @@ char pages[NUMBEROFPAGES][4][16] = { //page, line, char-in-string
     "2222222222222222"
   }
 };
-char point[] = "."; //used to create decimalpoints in numbers
+
+static char point[] = "."; //used to create decimalpoints in numbers
+static char colon[] = ":";
+static char month[12][3] = {
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun"
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec"
+}
 
 
 void page_update(void)
@@ -30,18 +46,18 @@ void page_update(void)
   /*page 0*/
   int8_t longitude_int = get_lon() >> 7;
   uint8_t longitude_frac = get_lon() & 0x7f;
-  strcpy(itoaconv(longitude_int), pages[0][1]);
-  strcat(point, pages[0][1]);
-  strcat(itoaconv(longitude_frac), pages[0][1]);
+  strcpy(pages[0][1], itoaconv(longitude_int));
+  strcat(pages[0][1], point);
+  strcat(pages[0][1], itoaconv(longitude_frac));
 
   int8_t latitude_int = get_lat() >> 7;
   uint8_t latitude_frac = get_lat() & 0x7f;
-  strcpy(itoaconv(latitude_int), pages[0][2]);
-  strcat(point, pages[0][2]);
-  strcat(itoaconv(latitude_frac), pages[0][2]);
+  strcpy(pages[0][2], itoaconv(latitude_int));
+  strcat(pages[0][2], point);
+  strcat(pages[0][2], itoaconv(latitude_frac));
 
   /*page 1*/
-  strcpy(itoaconv(get_min()), pages[1][1]);
+  strcpy(pages[1][1], itoaconv(get_min()));
 
 }
 
@@ -91,7 +107,7 @@ void setleds(void) //lights up leds according to the number of satellites we see
   else {
     char ledset = 0;
     int i;
-    for(i=0; i <= get_numSV(); i++) { //convert binary number into one-hot count
+    for(i=0; i < get_numSV(); i++) { //convert binary number into one-hot count
       ledset<<=1;
       ledset|=1;
     }

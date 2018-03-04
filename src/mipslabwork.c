@@ -28,9 +28,6 @@ void user_isr( void )
   }
 
   if(IFS(0) & 0x100) { //T2 (Screen timer)
-    //see what page we're on, then write the correct data to the screen and update
-    //display_debug(get_nav_clock_iTOW());
-    //display_update();
     if(spinner_status()) {
       disableuart();
       compasswork();
@@ -83,14 +80,11 @@ void labinit( void ) {
 
   uart_start_rx(); //start recieving bytes
 
-  setleds();
-
   return;
 }
 
 /* This function is called repetitively from the main program */
 void labwork( void ) {
-  //format packets into ready-to-print strings and images
-  //constantly handle button presses for screen change? or button interrupts?
+  delay(1000);
   return;
 }

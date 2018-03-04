@@ -49,6 +49,8 @@ void user_isr( void )
 /* Lab-specific initialization goes here */
 void labinit( void ) {
 
+  TRISECLR = 0xff; //enable led output
+
   /*initialize timer2*/
   T2CONCLR = 0xFFFF; //disable timer 2 and clear registers if enabled
   T2CONSET = 0x70; //set timer prescale to 256:1 (we need to count to 8M cycles, which is not possible with 1:64 or lower)

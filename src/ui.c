@@ -60,3 +60,19 @@ int getbtns(void)
 {
   return ((PORTD & 0xe0)>>5); // return BTN4-BTN2 values as 3 least significant bits
 }
+
+void setleds(void) //lights up leds according to the number of satellites we see
+{
+  if(get_numSV()>6)
+  PORTESET=0x7f;
+  else
+  {
+    char ledset;
+    int i;
+    for(i=get_numSV();i>0;i--) {
+      ledset|=1;
+      ledset<<1;
+    }
+    PORTESET=ledset;
+  }
+}

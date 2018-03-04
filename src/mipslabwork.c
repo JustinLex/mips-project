@@ -31,6 +31,11 @@ void user_isr( void )
     //see what page we're on, then write the correct data to the screen and update
     //display_debug(get_nav_clock_iTOW());
     //display_update();
+    if(spinner_status()) {
+      disableuart();
+      compasswork();
+      uart_start_rx();
+    }
     IFSCLR(0) = 0x100;
   }
 
@@ -53,9 +58,9 @@ void labinit( void ) {
 
   /*initialize timer2*/
   T2CONCLR = 0xFFFF; //disable timer 2 and clear registers if enabled
-  T2CONSET = 0x70; //set timer prescale to 256:1 (we need to count to 8M cycles, which is not possible with 1:64 or lower)
+  T2CONSET = 0x60; //set timer prescale to 64:1
   TMR2 = 0x0; //clear timer 2 count
-  PR2 = 0x7a12; //set period to 31250 = 100ms@312.5khz (80Mhz@1:256)
+  PR2 = 0x30D4; //set period to
   IFSCLR(0) = 0x100; //reset timer 2 Interrupt flag
   IPC(2) = 0x1A; //set timer2 interrupts to 2nd highest priority
   IEC(0) = 0x100; //enable timer 2 interrupts

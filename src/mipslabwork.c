@@ -38,6 +38,7 @@ void user_isr( void )
   uint8_t flag=0;
   if(flag%2){
     display_clear();
+    display_page();
     flag++;}
   page_update();
   IFSCLR(1) = 0x1;

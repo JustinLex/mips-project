@@ -142,6 +142,7 @@ void display_string(int line, char *s) {
 }
 
 void display_image(int x, const uint8_t *data) {
+	disableuart();
 	int i, j;
 
 	for(i = 0; i < 4; i++) {
@@ -158,6 +159,7 @@ void display_image(int x, const uint8_t *data) {
 		for(j = 0; j < 32; j++)
 			spi_send_recv(~data[i*32 + j]);
 	}
+	uart_start_rx();
 }
 
 void display_clear(void) {
@@ -178,7 +180,7 @@ void display_clear(void) {
 		for(j = 0; j < 128; j++)
 			spi_send_recv(0);
 	}
-	setupuart();
+	uart_start_rx();
 }
 
 void display_update(void) {

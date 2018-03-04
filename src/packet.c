@@ -2,6 +2,9 @@
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "mipslab.h"  /* Declatations for these labs */
 
+#define MAGIC 0xb562
+#define NAVPVTCODE 0x0107
+
 /*functions for processing packet data, written mainly by Justin Lex*/
 
 uint16_t packet_start_bits = 0; //holds interpacket bits while we search for a packet header
@@ -66,7 +69,7 @@ void check_packet_and_store() {
   }
   switch(packet_type) {
 
-    case 0x0107: //UBX-NAV-PVT
+    case NAVPVTCODE: //UBX-NAV-PVT
       store_nav_pvt_payload(payload);
       reset_rx_state();
       return;
@@ -89,7 +92,7 @@ volatile void handlepacket() {
     packet_start_bits <<= 8;
     packet_start_bits |= read_byte();
 
-    if ( packet_start_bits == 0xb562 ) { //magic bytes at the start of a UBX packet
+    if ( packet_start_bits == MAGIC ) { //magic bytes at the start of a UBX packet
       in_packet = 1;
     }
   }
@@ -103,11 +106,6 @@ volatile void handlepacket() {
 
       case 1: //message ID byte
         packet_type |= read_byte();
-        //drop packet if we're not waiting for it
-        if(packet_type != packet_type_table[packet_type_index]) {
-          reset_rx_state();
-          break;
-        }
         header_bytes_read++;
         break;
 

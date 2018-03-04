@@ -55,13 +55,6 @@ int main(void) {
 	SPI2CONSET = 0x8000;
 
 	display_init();
-	display_string(0, "abcd"); //Bork Bork
-	display_string(1, "efgh"); //good timing
-	display_string(2, "ijkl"); //pupper
-	display_string(3, "mnop");
-	display_update();
-
-	display_image(96, icon);
 
 	labinit(); /* Do any lab-specific initialization */
 

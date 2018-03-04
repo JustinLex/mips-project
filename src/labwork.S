@@ -49,58 +49,6 @@ delay:
 	jr $ra
 	nop #[delay-slot]
 
-.global	time2string
-time2string:
-PUSH	$ra
-PUSH 	$s0 #preserve $s0
-PUSH	$s1 #preserve $s1
-PUSH	$s2 #preserve $s2
-move	$s0,$a0 #save output address
-
-sb		$0,5($s0) #write NUL at byte 5
-
-addi	$t0,$0,0x3A #write the ASCII colon char to temp register
-sb  	$t0,2($s0)#write colon at byte 3
-
-addi 	$s1,$0,4 #byte offset for writing
-addi 	$s2,$0,2 #hardcode loop to skip offset 2
-
-loop:
-beq		$s1,$s2,decrementshift #see if offset is 2 (don't overwrite colon)
-nop
-move	$a0,$a1 #prepare hexasc input
-jal 	hexasc #convert first digit to ASCII
-nop
-add 	$t0,$s0,$s1 #calculate memory with offset
-sb		$v0,0($t0) #write $v0 into memory
-srl		$a1,$a1,4 #delete last number from input
-decrementshift:
-addiu	$s1,$s1,-1
-bgez	$s1,loop
-nop
-
-lb $s1,4($s0)
-addi $t0,$0,57
-bne $s1,$t0,notnine
-nop
-addi $t0,$0,0x4e
-sb $t0,4($s0)
-addi $t0,$0,0x49
-sb $t0,5($s0)
-addi $t0,$0,0x4e
-sb $t0,6($s0)
-addi $t0,$0,0x4e
-sb $t0,7($s0)
-sb $0,8($s0)
-
-notnine:
-POP		$s2
-POP		$s1
-POP 	$s0
-POP 	$ra
-jr	$ra
-nop
-
 .global enable_interrupt
 enable_interrupt:
 ei

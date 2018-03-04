@@ -22,10 +22,7 @@ void user_isr( void )
 {
 
   if(IFS(1) & 0x200) { //U2RX (UART recieve)
-    //disableuart();
-    //display_debug(textstring);
-
-    while(U2STA & 0x1) { //interrupt only triggers once on RX, so we need to loop until we've read them all
+    while(U2STA & 0x1) { //interrupt only triggers once on RX, so we need to loop until we've read them all (actually, this has been changed to interrupt whenever buffer is 3/4 full, but we want to empty the buffer whenever it goes)
       handlepacket();
     }
   }
@@ -39,20 +36,8 @@ void user_isr( void )
 
   if(IFS(1) & 0x1) { // CN (button press)
   //page_update();
-
   IFSCLR(1) = 0x1;
   }
-  //button interrupts for changing pages?
-  /*if(IFS(0) & 0x800) { //INT2
-    tick( &mytime );
-    tick( &mytime );
-    tick( &mytime );
-    time2string( textstring, mytime );
-    display_string( 3, textstring );
-    display_update();
-    IFSCLR(0) = 0x800;
-
-  }*/
 
   return;
 }
@@ -60,9 +45,7 @@ void user_isr( void )
 /* Lab-specific initialization goes here */
 void labinit( void ) {
 
-
-
-  /*initialize timer2*/ //TODO: Reconfig for project
+  /*initialize timer2*/
   T2CONCLR = 0xFFFF; //disable timer 2 and clear registers if enabled
   T2CONSET = 0x70; //set timer prescale to 256:1 (we need to count to 8M cycles, which is not possible with 1:64 or lower)
   TMR2 = 0x0; //clear timer 2 count
@@ -87,21 +70,14 @@ void labinit( void ) {
 
   enable_interrupt();
 
-  uart_start_rx();
+  uart_start_rx(); //start recieving bytes
 
   return;
 }
 
 /* This function is called repetitively from the main program */
 void labwork( void ) {
-  //display_page();
   //format packets into ready-to-print strings and images
   //constantly handle button presses for screen change? or button interrupts?
-  delay(700);
-  int temp = *(get_sec());
-  display_debug(&temp);
-
-  //int test = get_min();
-  //display_debug(&test);
   return;
 }

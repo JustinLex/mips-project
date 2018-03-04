@@ -2,44 +2,46 @@
 #include "mipslab.h"  /* Declatations for these labs */
 //methods for storing, processing, and accessing gps data
 
+//macro for defining variables
+#define DEFINEGPSVAR(TYPE, VAR) TYPE VAR = 0;
 
 /*shared variables*/
-uint32_t iTOW = 0; //GPS time of week (milliseconds)
+DEFINEGPSVAR(uint32_t, iTOW) //GPS time of week (milliseconds)
 
 //macro for pulling data out of payload
-#define EXTRACT(VAR, TYPE, OFFSET) VAR = *((TYPE*)(payload+OFFSET));
+#define EXTRACT(TYPE, VAR, OFFSET) VAR = *((TYPE*)(payload+OFFSET));
 
 /*UBX-NAV-PVT ""*/
 //unique variables
-uint16_t year = 0; //current UTC year (years)
-uint8_t month = 0; //current UTC month (months)
-uint8_t day = 0; //current UTC day of the month (days)
-uint8_t hour = 0; //current UTC hour of the day (hours)
-uint8_t min = 0; //current UTC minute of the hour (minutes)
-uint8_t sec = 0; //current UTC second of the minute (seconds)
-_Bool validDate = 0;
-_Bool validTime = 0;
-_Bool fullyResolved = 0; // true if all UTC time fields are known
-uint32_t tAcc = 0; //time accuracy estimate (±nanoseconds)
-int32_t nano = 0; //current UTC nanosecond (nanoseconds)
+DEFINEGPSVAR(uint16_t, year) //current UTC year (years)
+DEFINEGPSVAR(uint8_t, month) //current UTC month (months)
+DEFINEGPSVAR(uint8_t, day) //current UTC day of the month (days)
+DEFINEGPSVAR(uint8_t, hour) //current UTC hour of the day (hours)
+DEFINEGPSVAR(uint8_t, min) //current UTC minute of the hour (minutes)
+DEFINEGPSVAR(uint8_t, sec) //current UTC second of the minute (seconds)
+DEFINEGPSVAR(_Bool, validDate)
+DEFINEGPSVAR(_Bool, validTime)
+DEFINEGPSVAR(_Bool, fullyResolved) // true if all UTC time fields are known
+DEFINEGPSVAR(uint32_t, tAcc) //time accuracy estimate (±nanoseconds)
+DEFINEGPSVAR(int32_t, nano) //current UTC nanosecond (nanoseconds)
 
 // payload storer
 void store_nav_pvt_payload(uint8_t* payload) {
-  EXTRACT(iTOW, uint32_t, 0)
-  EXTRACT(year, uint16_t, 4)
-  EXTRACT(month, uint8_t, 6)
-  EXTRACT(day, uint8_t, 7)
-  EXTRACT(hour, uint8_t, 8)
-  EXTRACT(min, uint8_t, 9)
-  EXTRACT(sec, uint8_t, 10)
+  EXTRACT(uint32_t, iTOW, 0)
+  EXTRACT(uint16_t, year, 4)
+  EXTRACT(uint8_t, month, 6)
+  EXTRACT(uint8_t, day, 7)
+  EXTRACT(uint8_t, hour, 8)
+  EXTRACT(uint8_t, min, 9)
+  EXTRACT(uint8_t, sec, 10)
 
   int valid = *((uint8_t*)(payload+11));
   validDate = valid & 0x1;
   validTime = valid & 0x2;
   fullyResolved = valid & 0x4;
 
-  EXTRACT(tAcc, uint32_t, 12)
-  EXTRACT(nano, int32_t, 16)
+  EXTRACT(uint32_t, tAcc, 12)
+  EXTRACT(int32_t, nano, 16)
 }
 
 /*getters*/

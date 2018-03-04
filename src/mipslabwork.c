@@ -38,9 +38,9 @@ void user_isr( void )
   uint8_t flag=0;
   if(flag%2){
     display_clear();
-    display_page();
     flag++;}
   page_update();
+  display_page();
   IFSCLR(1) = 0x1;
   }
 
@@ -49,6 +49,7 @@ void user_isr( void )
 
 /* Lab-specific initialization goes here */
 void labinit( void ) {
+  display_clear(); //clear display (screen remembers data between boots)
 
   TRISECLR = 0xff; //enable led output
 

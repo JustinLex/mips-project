@@ -63,11 +63,12 @@ int getbtns(void)
 
 void setleds(void) //lights up leds according to the number of satellites we see
 {
+  PORTECLR = 0x7f;
   if(get_numSV()>6)
   PORTESET=0x7f;
   else
   {
-    char ledset;
+    char ledset = 0;
     int i;
     for(i=get_numSV();i>0;i--) {
       ledset|=1;

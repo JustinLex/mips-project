@@ -35,12 +35,10 @@ void user_isr( void )
   }
 
   if(IFS(1) & 0x1) { // CN (button press)
-  uint8_t flag=0;
-  if(flag%2){
-    display_clear();
-    flag++;}
-  page_switch();
-  display_page();
+    if(getbtns()){ //only trigger on button rising edge
+      page_switch();
+      display_page();
+    }
   IFSCLR(1) = 0x1;
   }
 

@@ -66,7 +66,7 @@ void store_nav_pvt_payload(uint8_t* payload) {
 /*getters*/
 
 //macro used to define getters
-#define GETTER(TYPE, VAR) TYPE* get_##VAR() { return &VAR; }
+#define GETTER(TYPE, VAR) TYPE get_##VAR() { return VAR; }
 
 //create getter functions with macro
 GETTER(uint32_t, iTOW)

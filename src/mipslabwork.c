@@ -78,6 +78,8 @@ void labinit( void ) {
 
   uart_start_rx(); //start recieving bytes
 
+  setleds();
+
   return;
 }
 

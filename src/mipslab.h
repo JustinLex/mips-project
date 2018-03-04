@@ -27,18 +27,6 @@ void send_packet(int type);
 
 void store_nav_pvt_payload(uint8_t* payload);
 
-uint32_t* get_iTOW(void);
-uint16_t* get_year(void);
-uint8_t* get_month(void);
-uint8_t* get_day(void);
-uint8_t* get_hour(void);
-uint8_t* get_min(void);
-uint8_t* get_sec(void);
-_Bool* get_validDate(void);
-_Bool* get_validTime(void);
-_Bool* get_fullyResolved(void);
-uint32_t* get_tAcc(void);
-int32_t* get_nano(void);
 
 /* Deckare UI functions */
 void display_page(void);

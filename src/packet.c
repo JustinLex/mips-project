@@ -71,8 +71,8 @@ void check_packet_and_store() {
 
     case NAVPVTCODE: //UBX-NAV-PVT
       store_nav_pvt_payload(payload);
-      page_update();
-      display_page();
+      //page_update();
+      //display_page();
       setleds();
       reset_rx_state();
       return;

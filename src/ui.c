@@ -57,7 +57,18 @@ void page_update(void)
   strcat(pages[0][2], itoaconv(latitude_frac));
 
   /*page 1*/
-  strcpy(pages[1][1], itoaconv(get_min()));
+  strcpy(pages[1][0],"Current time")
+  /*strcpy(pages[1][1], itoaconv(get_hour()));
+  strcat(pages[1][1], colon);
+  strcat(pages[1][1], itoaconv(get_min()));
+  strcat(pages[1][1], colon);
+  strcat(pages[1][1], itoaconv(get_sec()));
+  strcpy(pages[1][2],"Current date");
+  strcpy(pages[1][3], itoaconv(get_day()));
+  strcat(pages[1][3], " ");
+  strcat(pages[1][3], month[get_month()]);
+  strcat(pages[1][3], " ");
+  strcat(pages[1][3], itoaconv(get_year()));*/
 
 }
 

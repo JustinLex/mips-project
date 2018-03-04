@@ -83,7 +83,7 @@ void check_packet_and_store() {
   }
 }
 
-volatile void handlepacket() {
+void handlepacket() {
 
   //check for framing error
   if(U2STA & 0x2) {

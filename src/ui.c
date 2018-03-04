@@ -8,7 +8,7 @@
 
 uint8_t page=0; //variable for current page
 
-char pages[NUMBEROFPAGES][4][16] = { //page, line, char-in-string
+char pages[NUMBEROFPAGES][4][17] = { //page, line, char-in-string
   {
     "1111111111111111",
     "1111111111111111",
@@ -25,7 +25,7 @@ char pages[NUMBEROFPAGES][4][16] = { //page, line, char-in-string
 
 static char point[] = "."; //used to create decimalpoints in numbers
 static char colon[] = ":";
-static char month[12][3] = {
+static char month[12][4] = {
   "Jan",
   "Feb",
   "Mar",

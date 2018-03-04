@@ -39,7 +39,7 @@ void user_isr( void )
   if(flag%2){
     display_clear();
     flag++;}
-  page_update();
+  page_switch();
   display_page();
   IFSCLR(1) = 0x1;
   }

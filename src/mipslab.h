@@ -42,7 +42,7 @@ int32_t* get_nano(void);
 
 /* Deckare UI functions */
 void display_page(void);
-void page_update(void);
+void page_switch(void);
 int getbtns(void);
 
 /* Declare display-related functions from mipslabfunc.c */

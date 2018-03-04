@@ -36,7 +36,7 @@ void display_page(void) //put data to the textbuffer according to the page
 }
 
 
-void page_update(void)
+void page_switch(void)
 {
   {
     if(getbtns() & 0x4)

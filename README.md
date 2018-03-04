@@ -11,7 +11,7 @@ Jointly developed by Justin Lex and Petr Kocian.
 * Shows a meter that shows how many satellites are connected using the LEDs
 * Shows a humorous spinner page that shows a spinning arrow
 
-# Code Features
+## Code Features
 * Able to read and write to UART bus
 * Able to interpret UBX-NAV-PVT packets from GPS
 * Able to tell time from the GPS, using either a RTC or GPS synchronization

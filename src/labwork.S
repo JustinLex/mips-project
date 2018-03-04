@@ -20,19 +20,6 @@
   # Please add your own code below this line
   #
 
-hexasc:
-	andi	$a0,$a0,0xf
-	addi	$t0,$0,9
-	ble	$a0,$t0,hop
-	nop #[delay-slot]
-	addi	$v0,$a0,55 #[delay-slot]
-	jr 	$ra
-	nop
-	hop:
-		addi	$v0,$a0,48 #[delay-slot]
-		jr	$ra
-		nop
-
 .global	delay
 delay:
 	addi $t0,$0,8827 #[delay-slot] 8827

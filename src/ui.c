@@ -18,10 +18,16 @@ char pages[NUMBEROFPAGES][4][17] = { //page, line, char-in-string
     ""
   },
   {
-    "Current time",
+    "Current time:",
     "",
-    "Current date",
+    "Current date:",
     ""
+  },
+  {
+    "You spin me",
+    "right round",
+    "like record",
+    "round round"
   }
 };
 
@@ -76,24 +82,11 @@ void page_update(void)
   }
 
   STRCPY_LEADINGZERO(pages[1][1], get_hour())
-  /*if(get_hour < 10) {
-    strcat(pages[1][1]), "0"
-    strcat(pages[1][1], itoaconv(get_hour()));
-  } else {
-    strcpy(pages[1][1], itoaconv(get_hour()));
-  }*/
   strcat(pages[1][1], ":");
   STRCPY_LEADINGZERO(pages[1][1], get_min())
-  /*if(get_min < 10) {
-    strcat(pages[1][1]), "0"
-    strcat(pages[1][1], itoaconv(get_min()));
-  } else {
-    strcpy(pages[1][1], itoaconv(get_min()));
-  }
-  strcat(pages[1][1], itoaconv(get_min()));*/
   strcat(pages[1][1], ":");
   STRCPY_LEADINGZERO(pages[1][1], get_sec())
-  //strcat(pages[1][1], itoaconv(get_sec()));
+
   strcpy(pages[1][3], itoaconv(get_day()));
   strcat(pages[1][3], " ");
   strcat(pages[1][3], month[get_month() - 1]);
@@ -108,12 +101,14 @@ void display_page(void) //put data to the textbuffer according to the page
   display_string(1, pages[page][1]);
   display_string(2, pages[page][2]);
   display_string(3, pages[page][3]);
-  switch(page) { //optionally display an image if we're on a page that uses one
-
-  }
   disableuart();
   display_clear();
   display_update();
+  switch(page) { //optionally display an image if we're on a page that uses one
+    case 3:
+      compasswork();
+      break;
+  }
   uart_start_rx();
 }
 

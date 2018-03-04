@@ -24,15 +24,14 @@ void set_packet(int packet_nr);
 void send_packet(int type);
 
 /* Declare packet data functions from gpsdata.c */
-
 void store_nav_pvt_payload(uint8_t* payload);
-
 
 /* Deckare UI functions */
 void display_page(void);
 void page_switch(void);
 int getbtns(void);
 _Bool spinner_status(void);
+
 
 /* Declare display-related functions from mipslabfunc.c */
 void display_image(int x, const uint8_t *data);

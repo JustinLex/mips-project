@@ -71,7 +71,7 @@ void page_switch(void)
       if(getbtns() & 0x2) //go to next page
       {
         if(page==NUMBEROFPAGES-1)
-        page=0;z
+        page=0;
         else
         page++;
       }

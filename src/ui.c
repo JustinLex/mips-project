@@ -8,7 +8,7 @@
 
 uint8_t page=0; //variable for current page
 
-char pages[NUMBEROFPAGES][4][] = { //page, line, char-in-string
+char pages[NUMBEROFPAGES][4][16] = { //page, line, char-in-string
   {
     "1111111111111111",
     "1111111111111111",
@@ -21,29 +21,32 @@ char pages[NUMBEROFPAGES][4][] = { //page, line, char-in-string
     "2222222222222222",
     "2222222222222222"
   }
-}
-char point = "."; //used to create decimalpoints in numbers
+};
+char point[] = "."; //used to create decimalpoints in numbers
 
 
 void page_update(void)
 {
   /*page 0*/
-  int8_t longitude_int = *(get_lon) >> 7;
-  uint8_t longitude_frac = *(get_lon) & 0x7f;
+  int32_t* lon_ptr = get_lon();
+  int8_t longitude_int = *lon_ptr >> 7;
+  uint8_t longitude_frac = *lon_ptr & 0x7f;
 
-  strcpy(itoa(longitude_int), pages[0][1]);
+  strcpy(itoaconv(longitude_int), pages[0][1]);
   strcat(point, pages[0][1]);
-  strcat(itoa(longitude_frac), pages[0][1]);
+  strcat(itoaconv(longitude_frac), pages[0][1]);
 
-  int8_t latitude_int = *(get_lat) >> 7;
-  uint8_t latitude_frac = *(get_lat) & 0x7f;
+  int32_t* lat_ptr = get_lat();
+  int8_t latitude_int = *lat_ptr >> 7;
+  uint8_t latitude_frac = *lat_ptr & 0x7f;
 
-  strcpy(itoa(latitude_int), pages[0][2]);
+  strcpy(itoaconv(latitude_int), pages[0][2]);
   strcat(point, pages[0][2]);
-  strcat(itoa(latitude_frac), pages[0][2]);
+  strcat(itoaconv(latitude_frac), pages[0][2]);
 
   /*page 1*/
-  strcpy(itoa(*(get_min)), pages[1][1]);
+  uint8_t* min_ptr = get_min();
+  strcpy(itoaconv(*min_ptr), pages[1][1]);
 
 }
 

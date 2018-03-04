@@ -38,6 +38,7 @@ const _Bool north [32][32]={ //original north facing matrix on which we will per
 
 _Bool compass [32][32]; //rotated matrix
 uint8_t compass_data[128]; //rotated matrix in a display_image() compatible array
+int rot=0; //variable for the humorous rotating triangle page
 
 
 void clear_matrix(void) //clean current compass matrix
@@ -93,12 +94,7 @@ void fix_matrix(void){ //deletes bit gaps
     }
   }
 }
-uint8_t * get_compass_data(void) //function for getting the data for display_image (probably not working right)
-{
-  return compass_data;
-}
 
-int rot=0;
 void increase_rot(void) //function for testing
 {
   rot++;
@@ -118,6 +114,7 @@ void compasswork(void) //function for testing
 {
   clear_matrix();
   rotation((double)rot/10);
+  increase_rot();
   fix_matrix();
   convert_to_data();
   display_image(96,compass_data);

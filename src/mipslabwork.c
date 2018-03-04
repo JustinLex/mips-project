@@ -35,7 +35,11 @@ void user_isr( void )
   }
 
   if(IFS(1) & 0x1) { // CN (button press)
-  //page_update();
+  uint8_t flag=0;
+  if(flag%2){
+    display_clear();
+    flag++;}
+  page_update();
   IFSCLR(1) = 0x1;
   }
 

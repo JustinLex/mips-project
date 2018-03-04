@@ -1,55 +1,79 @@
 #include <stdint.h>   /* Declarations of uint_32 and the like */
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
+#include <string.h>
+
+#define NUMBEROFPAGES 2
 
 //functions for presenting data to the user
-int page=1; //variable for current page
+
+uint8_t page=0; //variable for current page
+
+char pages[NUMBEROFPAGES][4][] = { //page, line, char-in-string
+  {
+    "1111111111111111",
+    "1111111111111111",
+    "1111111111111111",
+    "1111111111111111"
+  },
+  {
+    "2222222222222222",
+    "2222222222222222",
+    "2222222222222222",
+    "2222222222222222"
+  }
+}
+char point = "."; //used to create decimalpoints in numbers
+
+
+void page_update(void)
+{
+  /*page 0*/
+  int8_t longitude_int = *(get_lon) >> 7;
+  uint8_t longitude_frac = *(get_lon) & 0x7f;
+
+  strcpy(itoa(longitude_int), pages[0][1]);
+  strcat(point, pages[0][1]);
+  strcat(itoa(longitude_frac), pages[0][1]);
+
+  int8_t latitude_int = *(get_lat) >> 7;
+  uint8_t latitude_frac = *(get_lat) & 0x7f;
+
+  strcpy(itoa(latitude_int), pages[0][2]);
+  strcat(point, pages[0][2]);
+  strcat(itoa(latitude_frac), pages[0][2]);
+
+  /*page 1*/
+  strcpy(itoa(*(get_min)), pages[1][1]);
+
+}
 
 void display_page(void) //put data to the textbuffer according to the page
 {
-  switch (page)
-  {
-    case 1:
-    {
-      int hej = 10;
-      display_debug(&hej);
-      break;
-    }
-    case 2:
-    {
-      int hejj = 11;
-      display_debug(&hejj);
-      break;
-    }
-    case 3:
-    {
-      int hj = 12;
-      display_debug(&hj);
-      break;
-    }
-    case 4:
-    {
-      int heej = 13;
-      display_debug(&heej);
-      break;
-    }
-  }
+  disableuart();
+  display_string(0, pages[page][0]);
+  display_string(1, pages[page][1]);
+  display_string(2, pages[page][2]);
+  display_string(3, pages[page][3]);
+  display_clear();
+  display_update();
+  uart_start_rx();
 }
 
 
 void page_switch(void)
 {
   {
-    if(getbtns() & 0x4)
+    if(getbtns() & 0x4) //go to previous page
       {
-        if(page==1)
-        page=4;
+        if(page==0)
+        page=NUMBEROFPAGES-1;
         else
         page--;
       }
-      if(getbtns() & 0x2)
+      if(getbtns() & 0x2) //go to next page
       {
-        if(page==4)
-        page=1;
+        if(page==NUMBEROFPAGES-1)
+        page=0;
         else
         page++;
       }

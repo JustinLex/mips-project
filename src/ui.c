@@ -138,9 +138,12 @@ void page_update(void)
     strcpy(pages[4][1], itoaconv(distance));
     strcpy(pages[4][2], "meters away from");
     strcpy(pages[4][3], "Kistan.");
-
-
-
+  } else {
+    strcpy(pages[4][0], "aaaaaaaaaaaaaaaa");
+    strcpy(pages[4][0], "    You are");
+    strcpy(pages[4][1], "  IN KISTAN!!!");
+    strcpy(pages[4][2], "Go get yourself");
+    strcpy(pages[4][3], "a cold Frank's!");
 
 
   }

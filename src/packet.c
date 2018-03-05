@@ -73,12 +73,14 @@ void check_packet_and_store() {
     case NAVPVT_CODE: //UBX-NAV-PVT
       store_nav_pvt_payload(payload);
       page_update();
-      display_page();
+      //display_page();
       setleds();
       break;
 
     case NAVPOSECEF_CODE:
-      store_nav_pvt_payload(payload);
+      store_nav_posecef_payload(payload);
+      page_update();
+      display_page();
       break;
   }
   reset_rx_state();

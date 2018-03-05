@@ -80,6 +80,16 @@ void page_update(void)
   strcat(pages[0][2], itoaconv(get_hMSL() / 1000)); //(convert altitude from mm to meters)
   strcat(pages[0][2], " m");
 
+  strcpy(pages[0][3], "Accy: ");
+  if(get_hAcc < 10000000) {
+    strcat(pages[0][3], itoaconv(get_hAcc() / 1000)); //(convert horiz. accuracy from mm to meters)
+    strcat(pages[0][2], " m");
+  } else {
+    strcat(pages[0][3], itoaconv(get_hAcc() / 1000000)); //(convert horiz. accuracy from mm to kilometers)
+    strcat(pages[0][2], " km");
+  }
+
+
   /*page 1*/
   //put a null at the beginning of the string so we can use strcat
   pages[1][1][0] = 0;

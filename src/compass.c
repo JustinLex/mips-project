@@ -125,8 +125,8 @@ void clear_matrix(_Bool array[32][32]) //clean current compass matrix
 
 }
 
-void rotation(double radian, _Bool array[32][32], const _Bool orig_array[32][32])   // function for rotating the north matrix about the middle/origin for X radians
-{                              // and storing it in compass matrix
+void rotation(double radian, _Bool array[32][32], const _Bool orig_array[32][32])   // function for rotating the north/hand matrix about the middle/origin for X radians
+{                                                                                    // and storing it in orig_array matrix
   double x,y;
   double rx,ry; //rotated x and y
   int i,j;
@@ -186,44 +186,44 @@ void convert_to_data(uint8_t output[128],_Bool array[32][32]) //converts the 32x
 }
 void compasswork(void) //function for spinning triangle
 {
-  clear_matrix(compass);
-  rotation((double)rot/10,compass,north);
-  increase_rot();
-  fix_matrix(compass);
-  convert_to_data(compass_data,compass);
-  display_image(96,compass_data);
+  clear_matrix(compass);  //clear the matrix
+  rotation((double)rot/10,compass,north); //rotate the matrix
+  increase_rot(); //increase the rotation by a bit
+  fix_matrix(compass); //fix holes
+  convert_to_data(compass_data,compass); //converts rotated matrix to display_image format
+  display_image(96,compass_data); //displays rotated matrix on the screen
 }
 
-double seccom=0;
-double mincom=0;
-double hourcom=0;
-void clockwork(void)
+double seccom=0; //current second
+double mincom=0; //current minute
+double hourcom=0; //current hour
+void clockwork(void) //clock function
 {
+  clear_matrix(clock_min_array);
+  clear_matrix(clock_hour_array);
+  clear_matrix(clock_sec_array);
   seccom=2*M_PI*(double)get_sec()/60;
   mincom=2*M_PI*(double)get_min()/60;
-  hourcom=2*M_PI*(double)get_hour()/12;
-  rotation(hourcom,clock_hour_array,clock_hour); //fix this
-  rotation(mincom,clock_min_array,clock_min_sec); //fix this
-  clear_matrix(clock_sec_array);
-  seccom+=2*M_PI/60;
-  rotation(seccom,clock_sec_array,clock_min_sec);
+  hourcom=2*M_PI*(double)get_hour()/12; //set our rotation according to current time from the GPS
+  rotation(hourcom,clock_hour_array,clock_hour);
+  rotation(mincom,clock_min_array,clock_min_sec);
+  rotation(seccom,clock_sec_array,clock_min_sec); //rotate minute and hour hands
+//  seccom+=2*M_PI/60;
   fix_matrix(clock_sec_array);
-  if(seccom>=2*M_PI)
+/*  if(seccom>=2*M_PI)
   {
     seccom=2*M_PI/60;
-    clear_matrix(clock_min_array);
     mincom+=2*M_PI/60;
     rotation(mincom,clock_min_array,clock_min_sec);
-    fix_matrix(clock_min_array);
     if(mincom>=2*M_PI)
     {
       mincom=2*M_PI/60;
-      clear_matrix(clock_hour_array);
       hourcom+=2*M_PI/12;
       rotation(hourcom,clock_hour_array,clock_hour);
-      fix_matrix(clock_hour_array);
     }
-  }
+  }*/
+  fix_matrix(clock_min_array);
+  fix_matrix(clock_hour_array);
   int i,j;
   for(i=0; i<32; i++)
     for(j=0; j<32; j++)

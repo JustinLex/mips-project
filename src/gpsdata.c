@@ -63,6 +63,23 @@ void store_nav_pvt_payload(uint8_t* payload) {
   EXTRACT(int32_t, headMot, 64)
 }
 
+
+/*UBX-NAV-POSECEF "Position Solution in ECEF"*/
+//unique variables
+DEFINEGPSVAR(int32_t, ecefX) //(centimeters)
+DEFINEGPSVAR(int32_t, ecefY) //(centimeters)
+DEFINEGPSVAR(int32_t, ecefZ) //(centimeters)
+DEFINEGPSVAR(uint32_t, pAcc) //(±centimeters)
+
+// payload storer
+void store_nav_posecef_payload(uint8_t payload*) {
+  DEFINEGPSVAR(int32_t, ecefX, 4)
+  DEFINEGPSVAR(int32_t, ecefY, 8)
+  DEFINEGPSVAR(int32_t, ecefZ, 12)
+  DEFINEGPSVAR(uint32_t, pAcc, 16)
+}
+
+
 /*getters*/
 
 //macro used to define getters
@@ -90,3 +107,8 @@ GETTER(uint32_t, hAcc)
 GETTER(uint32_t, vAcc)
 GETTER(int32_t, gSpeed)
 GETTER(int32_t, headMot)
+
+GETTER(int32_t, ecefX)
+GETTER(int32_t, ecefY)
+GETTER(int32_t, ecefZ)
+GETTER(uint32_t, pAcc)

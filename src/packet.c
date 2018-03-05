@@ -3,7 +3,9 @@
 #include "mipslab.h"  /* Declatations for these labs */
 
 #define MAGIC 0xb562
-#define NAVPVTCODE 0x0107
+#define MAX_PAYLOAD_SIZE 128
+#define NAVPVT_CODE 0x0107
+#define NAVPOSECEF_CODE 0x0101
 
 /*functions for processing packet data, written mainly by Justin Lex*/
 
@@ -19,7 +21,7 @@ uint8_t header_bytes_read = 0;
 uint16_t payload_bytes_read = 0;
 uint8_t checksum_bytes_read = 0;
 
-uint8_t payload[512];
+uint8_t payload[MAX_PAYLOAD_SIZE];
 uint16_t checksum = 0;
 
 
@@ -68,19 +70,19 @@ void check_packet_and_store() {
     return;
   }
   switch(packet_type) {
-
-    case NAVPVTCODE: //UBX-NAV-PVT
+    case NAVPVT_CODE: //UBX-NAV-PVT
       store_nav_pvt_payload(payload);
       page_update();
       display_page();
       setleds();
       reset_rx_state();
-      return;
+      break;
 
-    default: //unused packet type
-      reset_rx_state();
-      return;
+    case NAVPOSECEF_CODE:
+      store_nav_pvt_payload(payload);
+      break;
   }
+  reset_rx_state();
 }
 
 void handlepacket() {
@@ -120,7 +122,7 @@ void handlepacket() {
       case 3: //length field LSB
         payload_length |= (uint16_t) read_byte() << 8;
         header_bytes_read++;
-        if(payload_length > 512) { //drop packet if payload is too big
+        if(payload_length > MAX_PAYLOAD_SIZE) { //drop packet if payload is too big
           reset_rx_state();
         }
         break;

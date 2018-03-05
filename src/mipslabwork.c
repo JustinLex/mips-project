@@ -17,6 +17,8 @@
 
 char textstring[] = "text, more text, and even more text!";
 
+uint32_t blinker_count = 0;
+
 /* Interrupt Service Routine */
 void user_isr( void )
 {
@@ -32,6 +34,12 @@ void user_isr( void )
       disableuart();
       compasswork();
       uart_start_rx();
+    }
+    if(blinker_status()) {
+      if(!(blinker_count % (distance_to_kistan() / 10))) {
+        PORTEINV = 0xff;
+      }
+      blinker_count++;
     }
     IFSCLR(0) = 0x100;
   }

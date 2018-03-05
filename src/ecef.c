@@ -3,10 +3,10 @@
 
 //functions for handling ecef data
 
-//XYZ coords of Kistan, in cm (preliminary)
-#define KISTAN_X 309597600
-#define KISTAN_Y 100301600
-#define KISTAN_Z 546711700
+//XYZ coords of Kistan, in cm
+#define KISTAN_X 309595100
+#define KISTAN_Y 100301000
+#define KISTAN_Z 546706800
 
 int * errno = 0; //linker kludge for sqrt()
 

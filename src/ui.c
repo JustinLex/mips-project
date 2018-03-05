@@ -3,11 +3,12 @@
 #include <string.h>
 #include "mipslab.h"
 
-#define NUMBEROFPAGES 5
+#define NUMBEROFPAGES 6
 
 //functions for presenting data to the user
 
 uint8_t page=0; //variable for current page
+_Bool blinker_enabled = 0;
 _Bool spinner_enabled = 0;
 
 char pages[NUMBEROFPAGES][4][17] = { //page, line, char-in-string
@@ -18,9 +19,15 @@ char pages[NUMBEROFPAGES][4][17] = { //page, line, char-in-string
     ""
   },
   { //time
-    "Current time:",
+    " Time:",
     "",
-    "Current date:",
+    " Date:",
+    ""
+  },
+  { //ECEF coords
+    "ECEF coords:",
+    "",
+    "",
     ""
   },
   { //map
@@ -115,6 +122,30 @@ void page_update(void)
   strcat(pages[1][3], " ");
   strcat(pages[1][3], itoaconv(get_year()));
 
+
+  /*page 2*/
+  strcpy(pages[2][1], "X: ");
+  strcat(pages[2][1], itoaconv(get_ecefX() / 100));
+  strcpy(pages[2][1], "Y: ");
+  strcat(pages[2][1], itoaconv(get_ecefY() / 100));
+  strcpy(pages[2][1], "Z: ");
+  strcat(pages[2][1], itoaconv(get_ecefZ() / 100));
+
+
+  /*page 4*/
+  uint32_t distance = distance_to_kistan(get_ecefX(), get_ecefY(), get_ecefZ());
+  if(distance > 20) {
+    strcpy(pages[4][0], "You are");
+    strcpy(pages[4][1], itoaconv(distance));
+    strcpy(pages[4][2], "meters away from");
+    strcpy(pages[4][3], "Kistan.");
+
+
+
+
+
+  }
+
 }
 
 void display_page(void) //put data to the textbuffer according to the page
@@ -127,8 +158,8 @@ void display_page(void) //put data to the textbuffer according to the page
   display_clear();
   display_update();
   switch(page) { //optionally display an image if we're on a page that uses one
-    case 4:
-      compasswork();
+    case 1:
+      clockwork();
       break;
   }
   uart_start_rx();
@@ -150,7 +181,9 @@ void page_switch(void) {
       else
       page++;
     }
-  if(page == 2) spinner_enabled = 1;
+  if(page == 4) blinker_enabled = 1;
+  else blinker_enabled = 0;
+  if(page == 5) spinner_enabled = 1;
   else spinner_enabled = 0;
 }
 
@@ -160,10 +193,10 @@ int getbtns(void)
 }
 
 void setleds(void) {//lights up leds according to the number of satellites we see
-  if(page!=3) { //don't show satellite count on proximity page
+  if(!blinker_enabled) { //don't show satellite count on proximity page
     PORTECLR = 0x7f;
-    if(get_numSV()>6)
-    PORTESET=0x7f;
+    if(get_numSV()>7)
+    PORTESET=0xff;
     else {
       char ledset = 0;
       int i;
@@ -178,4 +211,8 @@ void setleds(void) {//lights up leds according to the number of satellites we se
 
 _Bool spinner_status(void) {
   return spinner_enabled;
+}
+
+_Bool blinker_status(void) {
+  return blinker_enabled;
 }

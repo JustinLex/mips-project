@@ -126,10 +126,10 @@ void page_update(void)
   /*page 2*/
   strcpy(pages[2][1], "X: ");
   strcat(pages[2][1], itoaconv(get_ecefX() / 100));
-  strcpy(pages[2][1], "Y: ");
-  strcat(pages[2][1], itoaconv(get_ecefY() / 100));
-  strcpy(pages[2][1], "Z: ");
-  strcat(pages[2][1], itoaconv(get_ecefZ() / 100));
+  strcpy(pages[2][2], "Y: ");
+  strcat(pages[2][2], itoaconv(get_ecefY() / 100));
+  strcpy(pages[2][3], "Z: ");
+  strcat(pages[2][3], itoaconv(get_ecefZ() / 100));
 
 
   /*page 4*/

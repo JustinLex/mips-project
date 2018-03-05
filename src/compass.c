@@ -2,7 +2,7 @@
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include <math.h> /*Declarations of sin,cos and so on*/
 
-const _Bool clock_min_sec [32][32]={ //clock hour hand
+const _Bool clock_hour [32][32]={ //clock hour hand
   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -126,7 +126,7 @@ void clear_matrix(_Bool array[32][32]) //clean current compass matrix
 
 }
 
-void rotation(double radian, _Bool array[32][32], _Bool orig_arrayx[][])   // function for rotating the north matrix about the middle/origin for X radians
+void rotation(double radian, _Bool array[32][32], _Bool orig_array[][])   // function for rotating the north matrix about the middle/origin for X radians
 {                              // and storing it in compass matrix
   double x,y;
   double rx,ry; //rotated x and y
@@ -135,7 +135,7 @@ void rotation(double radian, _Bool array[32][32], _Bool orig_arrayx[][])   // fu
   for(i=0; i<32; i++)
     for(j=0; j<32; j++)
     {
-      if(clock[i][j]==0) //skip 0 values since we care only about 1s
+      if(orig_array[i][j]==0) //skip 0 values since we care only about 1s
       continue;
       x=(double) -15 + j; //convert i into x coordinates (origin=[15][15])
       y=(double) 15 - i; //convert j into y coordinates

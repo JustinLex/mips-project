@@ -83,10 +83,10 @@ void page_update(void)
   strcpy(pages[0][3], "Accy: ");
   if(get_hAcc() < 10000000) {
     strcat(pages[0][3], itoaconv(get_hAcc() / 1000)); //(convert horiz. accuracy from mm to meters)
-    strcat(pages[0][2], " m");
+    strcat(pages[0][3], " m");
   } else {
     strcat(pages[0][3], itoaconv(get_hAcc() / 1000000)); //(convert horiz. accuracy from mm to kilometers)
-    strcat(pages[0][2], " km");
+    strcat(pages[0][3], " km");
   }
 
 

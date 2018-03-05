@@ -8,7 +8,6 @@
 //functions for presenting data to the user
 
 uint8_t page=0; //variable for current page
-_Bool blinker_enabled = 0;
 _Bool spinner_enabled = 0;
 
 char pages[NUMBEROFPAGES][4][17] = { //page, line, char-in-string
@@ -181,11 +180,6 @@ void page_switch(void) {
       else
       page++;
     }
-  if(page == 4)  {
-    blinker_enabled = 1;
-    PORTECLR = 0xff;
-  }
-  else blinker_enabled = 0;
   if(page == 5) spinner_enabled = 1;
   else spinner_enabled = 0;
 }
@@ -196,26 +190,20 @@ int getbtns(void)
 }
 
 void setleds(void) {//lights up leds according to the number of satellites we see
-  if(!blinker_enabled) { //don't show satellite count on proximity page
-    PORTECLR = 0xff;
-    if(get_numSV()>7)
-    PORTESET=0xff;
-    else {
-      char ledset = 0;
-      int i;
-      for(i=0; i < get_numSV(); i++) { //convert binary number into one-hot count
-        ledset<<=1;
-        ledset|=1;
-      }
-      PORTE=ledset;
+  PORTECLR = 0xff;
+  if(get_numSV()>7)
+  PORTESET=0xff;
+  else {
+    char ledset = 0;
+    int i;
+    for(i=0; i < get_numSV(); i++) { //convert binary number into one-hot count
+      ledset<<=1;
+      ledset|=1;
     }
+    PORTE=ledset;
   }
 }
 
 _Bool spinner_status(void) {
   return spinner_enabled;
-}
-
-_Bool blinker_status(void) {
-  return blinker_enabled;
 }

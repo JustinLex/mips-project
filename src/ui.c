@@ -81,7 +81,7 @@ void page_update(void)
   strcat(pages[0][2], " m");
 
   strcpy(pages[0][3], "Accy: ");
-  if(get_hAcc < 10000000) {
+  if(get_hAcc() < 10000000) {
     strcat(pages[0][3], itoaconv(get_hAcc() / 1000)); //(convert horiz. accuracy from mm to meters)
     strcat(pages[0][2], " m");
   } else {

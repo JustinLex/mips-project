@@ -3,7 +3,7 @@
 #include <string.h>
 #include "mipslab.h"
 
-#define NUMBEROFPAGES 3
+#define NUMBEROFPAGES 5
 
 //functions for presenting data to the user
 
@@ -11,19 +11,31 @@ uint8_t page=0; //variable for current page
 _Bool spinner_enabled = 0;
 
 char pages[NUMBEROFPAGES][4][17] = { //page, line, char-in-string
-  {
+  { //lat/long
     "",
     "",
     "",
     ""
   },
-  {
+  { //time
     "Current time:",
     "",
     "Current date:",
     ""
   },
-  {
+  { //map
+    "",
+    "",
+    "",
+    ""
+  },
+  { //proximity
+    "",
+    "",
+    "",
+    ""
+  },
+  { //spinner
     "You spin me",
     "right round",
     "like record",
@@ -105,7 +117,7 @@ void display_page(void) //put data to the textbuffer according to the page
   display_clear();
   display_update();
   switch(page) { //optionally display an image if we're on a page that uses one
-    case 3:
+    case 4:
       compasswork();
       break;
   }
@@ -137,19 +149,20 @@ int getbtns(void)
   return ((PORTD & 0xe0)>>5); // return BTN4-BTN2 values as 3 least significant bits
 }
 
-void setleds(void) //lights up leds according to the number of satellites we see
-{
-  PORTECLR = 0x7f;
-  if(get_numSV()>6)
-  PORTESET=0x7f;
-  else {
-    char ledset = 0;
-    int i;
-    for(i=0; i < get_numSV(); i++) { //convert binary number into one-hot count
-      ledset<<=1;
-      ledset|=1;
+void setleds(void) {//lights up leds according to the number of satellites we see
+  if(page!=3) { //don't show satellite count on proximity page
+    PORTECLR = 0x7f;
+    if(get_numSV()>6)
+    PORTESET=0x7f;
+    else {
+      char ledset = 0;
+      int i;
+      for(i=0; i < get_numSV(); i++) { //convert binary number into one-hot count
+        ledset<<=1;
+        ledset|=1;
+      }
+      PORTE=ledset;
     }
-    PORTE=ledset;
   }
 }
 

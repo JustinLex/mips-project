@@ -28,10 +28,8 @@ void user_isr( void )
   }
 
   if(IFS(0) & 0x100) { //T2 (Screen timer)
-    if(spinner_status()) {
-      disableuart();
-      compasswork();
-      uart_start_rx();
+    if(spinner_status()) { //refresh the screen for the spinner
+      display_page();
     }
     IFSCLR(0) = 0x100;
   }

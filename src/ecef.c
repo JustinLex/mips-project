@@ -7,7 +7,8 @@
 #define KISTAN_X 309597600
 #define KISTAN_Y 100301600
 #define KISTAN_Z 546711700
-int * errno = 0;
+
+int * errno = 0; //linker kludge
 
 //returns the distance to kistan, takes centimeters, returns meters
 uint32_t distance_to_kistan(uint32_t x, uint32_t y, uint32_t z) {

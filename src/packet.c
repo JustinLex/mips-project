@@ -75,7 +75,6 @@ void check_packet_and_store() {
       page_update();
       display_page();
       setleds();
-      reset_rx_state();
       break;
 
     case NAVPOSECEF_CODE:

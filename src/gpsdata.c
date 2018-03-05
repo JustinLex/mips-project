@@ -73,10 +73,10 @@ DEFINEGPSVAR(uint32_t, pAcc) //(±centimeters)
 
 // payload storer
 void store_nav_posecef_payload(uint8_t payload*) {
-  DEFINEGPSVAR(int32_t, ecefX, 4)
-  DEFINEGPSVAR(int32_t, ecefY, 8)
-  DEFINEGPSVAR(int32_t, ecefZ, 12)
-  DEFINEGPSVAR(uint32_t, pAcc, 16)
+  EXTRACT(int32_t, ecefX, 4)
+  EXTRACT(int32_t, ecefY, 8)
+  EXTRACT(int32_t, ecefZ, 12)
+  EXTRACT(uint32_t, pAcc, 16)
 }
 
 

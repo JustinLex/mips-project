@@ -35,8 +35,7 @@ const _Bool clock_hour [32][32]={ //clock hour hand
   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-
-}
+};
 
 const _Bool clock_min_sec [32][32]={ //clock min/sec hand
   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -126,7 +125,7 @@ void clear_matrix(_Bool array[32][32]) //clean current compass matrix
 
 }
 
-void rotation(double radian, _Bool array[32][32], _Bool orig_array[][])   // function for rotating the north matrix about the middle/origin for X radians
+void rotation(double radian, _Bool array[32][32], const _Bool orig_array[32][32])   // function for rotating the north matrix about the middle/origin for X radians
 {                              // and storing it in compass matrix
   double x,y;
   double rx,ry; //rotated x and y

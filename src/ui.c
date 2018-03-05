@@ -181,7 +181,10 @@ void page_switch(void) {
       else
       page++;
     }
-  if(page == 4) blinker_enabled = 1;
+  if(page == 4)  {
+    blinker_enabled = 1;
+    PORTECLR = 0xff;
+  }
   else blinker_enabled = 0;
   if(page == 5) spinner_enabled = 1;
   else spinner_enabled = 0;
@@ -194,7 +197,7 @@ int getbtns(void)
 
 void setleds(void) {//lights up leds according to the number of satellites we see
   if(!blinker_enabled) { //don't show satellite count on proximity page
-    PORTECLR = 0x7f;
+    PORTECLR = 0xff;
     if(get_numSV()>7)
     PORTESET=0xff;
     else {

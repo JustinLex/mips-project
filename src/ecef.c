@@ -15,6 +15,6 @@ uint32_t distance_to_kistan(uint32_t x, uint32_t y, uint32_t z) {
   int32_t x_diff = KISTAN_X - x;
   int32_t y_diff = KISTAN_Y - y;
   int32_t z_diff = KISTAN_Z - z;
-  uint32_t dist_squared = ((x_diff * x_diff) + (y_diff * y_diff) + (z_diff * z_diff)) / 100; //technically this could overflow?
+  uint32_t dist_squared = ((x_diff * x_diff) + (y_diff * y_diff) + (z_diff * z_diff)) / 10000; //technically this could overflow?
   return (uint32_t) (sqrt(dist_squared));
 }

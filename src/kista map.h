@@ -1,15 +1,15 @@
-#define Kista_Map_width 384
-#define Kista_Map_height 192
+#define KISTA_MAP_WIDTH 384
+#define KISTA_MAP_HEIGHT 192
 
-#define map_meter_width 1050
-#define map_meter_height 540
+#define MAP_METER_WIDTH 1050
+#define MAP_METER_HEIGHT 540
 
 //top left pixel ECEF coords (meters)
-#define map_origin_x 3095911
-#define map_origin_y 1002356
-#define map_origin_z 5467174
+#define MAP_ORIGIN_X 3095911
+#define MAP_ORIGIN_Y 1002356
+#define MAP_ORIGIN_Z 5467174
 
-static unsigned char Kista_Map_bits[] = { // X BitMap format, each byte represents 8 pixels left-to-right. (from LSB to MSB)
+static unsigned char KISTA_MAP_BITS[] = { // X BitMap format, each byte represents 8 pixels left-to-right. (from LSB to MSB)
    0xfe, 0xff, 0xff, 0xff, 0x3f, 0x7b, 0x00, 0x00, 0x00, 0xf0, 0x1f, 0x00,
    0x00, 0xfc, 0xff, 0xff, 0xff, 0x4f, 0x32, 0x04, 0x00, 0x00, 0xfc, 0xdf,
    0x3f, 0xc0, 0xff, 0x2f, 0x16, 0xe2, 0xff, 0x3f, 0x7f, 0x3e, 0x10, 0xfc,

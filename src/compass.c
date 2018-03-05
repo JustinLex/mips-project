@@ -207,30 +207,17 @@ void clockwork(void) //clock function
   hourcom=2*M_PI*(double)get_hour()/12; //set our rotation according to current time from the GPS
   rotation(hourcom,clock_hour_array,clock_hour);
   rotation(mincom,clock_min_array,clock_min_sec);
-  rotation(seccom,clock_sec_array,clock_min_sec); //rotate minute and hour hands
-//  seccom+=2*M_PI/60;
+  rotation(seccom,clock_sec_array,clock_min_sec); //rotate second, minute and hour hands
   fix_matrix(clock_sec_array);
-/*  if(seccom>=2*M_PI)
-  {
-    seccom=2*M_PI/60;
-    mincom+=2*M_PI/60;
-    rotation(mincom,clock_min_array,clock_min_sec);
-    if(mincom>=2*M_PI)
-    {
-      mincom=2*M_PI/60;
-      hourcom+=2*M_PI/12;
-      rotation(hourcom,clock_hour_array,clock_hour);
-    }
-  }*/
   fix_matrix(clock_min_array);
-  fix_matrix(clock_hour_array);
+  fix_matrix(clock_hour_array); //fix time matrices
   int i,j;
   for(i=0; i<32; i++)
-    for(j=0; j<32; j++)
+    for(j=0; j<32; j++) //combine all time matrices in one
     {
        clocktotal[i][j]=clock_sec_array[i][j]|clock_min_array[i][j]|clock_hour_array[i][j];
     }
 
-  convert_to_data(clock_data,clocktotal);
+  convert_to_data(clock_data,clocktotal); //convert finished time matrix to display_image() format
   display_image(96,clock_data);
 }

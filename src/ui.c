@@ -105,7 +105,7 @@ void display_page(void) //put data to the textbuffer according to the page
   display_clear();
   display_update();
   switch(page) { //optionally display an image if we're on a page that uses one
-    case 3:
+    case 2:
       compasswork();
       break;
   }

@@ -199,8 +199,11 @@ double mincom=0;
 double hourcom=0;
 void clockwork(void)
 {
-  rotation(0,clock_hour_array,clock_hour); //fix this
-  rotation(0,clock_min_array,clock_min_sec); //fix this
+  seccom=2*M_PI*(double)get_sec()/60;
+  mincom=2*M_PI*(double)get_min()/60;
+  hourcom=2*M_PI*(double)get_hour()/12;
+  rotation(hourcom,clock_hour_array,clock_hour); //fix this
+  rotation(mincom,clock_min_array,clock_min_sec); //fix this
   clear_matrix(clock_sec_array);
   seccom+=2*M_PI/60;
   rotation(seccom,clock_sec_array,clock_min_sec);
@@ -216,7 +219,7 @@ void clockwork(void)
     {
       mincom=2*M_PI/60;
       clear_matrix(clock_hour_array);
-      hourcom+=2*M_PI/60;
+      hourcom+=2*M_PI/12;
       rotation(hourcom,clock_hour_array,clock_hour);
       fix_matrix(clock_hour_array);
     }
